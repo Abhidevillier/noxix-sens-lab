@@ -1,0 +1,1261 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Noxix Sens Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:ital,wght@0,600;0,700;0,800;1,800;1,900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: landing hero (pitch + 3-step setup card) → full-width results with game-style slider rows.
+   Noxix brand: one committed dark look (blood red + silver on black), same in every viewer theme. */
+:root{
+  --bg:#060606; --surface:#0f0f11; --surface2:#19191c; --surface3:#232327; --line:#26262b; --line2:#36363d;
+  --fg:#eef0f3; --muted:#9a9ca4; --dim:#6c6e76;
+  --accent:#ff2a3d; --accent2:#c4101f; --accent-ink:#ffffff; --accent-soft:#2a0a0e; --glow:rgba(255,42,61,.45);
+  --silver:linear-gradient(180deg,#ffffff,#d4d6dc 55%,#8b8f99);
+  --hud-bg1:#141a1f; --hud-bg2:#4d5560; --hud-ground:#2a2a24; --hud-btn:rgba(255,255,255,.16); --hud-fg:#ffffff;
+  --good:#4fd18b; --warn:#ffb03a;
+  --f-LT:#5b9cf0; --f-RT:#ff8a3d; --f-LI:#4cc47e; --f-RI:#e86bd0; --f-LM:#a58bff; --f-RM:#3cc9c6;
+  --display:"Saira Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);letter-spacing:.01em;text-wrap:balance;margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0;display:flex;align-items:center;gap:8px}
+.eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* ---------- top bar ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.mark{width:44px;height:44px;border-radius:50%;flex:none;box-shadow:0 0 0 2px var(--accent),0 0 22px var(--glow)}
+.wm{font:italic 900 26px/1 var(--display);letter-spacing:.06em;background:var(--silver);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wm b{color:var(--accent);-webkit-text-fill-color:var(--accent)}
+.tag{font:700 13px/1 var(--display);letter-spacing:.24em;color:var(--accent);border:1px solid var(--accent-soft);background:var(--accent-soft);padding:5px 8px;border-radius:4px}
+.socials{display:flex;gap:6px;flex-wrap:wrap}
+.socials a{font:600 12px/1 var(--mono);color:var(--muted);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:7px 11px;transition:color .15s,border-color .15s}
+.socials a:hover{color:var(--fg);border-color:var(--accent)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);
+  background:radial-gradient(70% 90% at 15% 0%,rgba(255,42,61,.18),transparent 60%),radial-gradient(50% 70% at 100% 100%,rgba(255,42,61,.08),transparent 60%),var(--bg)}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 30% 30%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse 80% 70% at 30% 30%,#000 20%,transparent 75%)}
+.hero-in{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center;padding-block:36px 48px}
+@media (max-width:920px){.hero-in{grid-template-columns:minmax(0,1fr);gap:28px;padding-block:20px 32px}}
+.pitch h1{font:italic 900 clamp(44px,7vw,84px)/.92 var(--display);text-transform:uppercase;letter-spacing:-.005em;margin-top:14px}
+.pitch h1 em{font-style:inherit;color:var(--accent);text-shadow:0 0 34px var(--glow)}
+.lede{font-size:17px;color:#c9cbd1;max-width:46ch;margin:18px 0 0}
+.proof{list-style:none;padding:0;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:10px 28px}
+.proof li{display:flex;flex-direction:column;font-size:12.5px;color:var(--muted)}
+.proof b{font:800 30px/1 var(--display);color:var(--fg)}
+
+/* reticle decoration behind the setup card */
+.setupwrap{position:relative}
+.reticle{position:absolute;right:-90px;top:50%;width:420px;height:420px;transform:translateY(-50%);pointer-events:none;opacity:.5}
+.reticle::before,.reticle::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,42,61,.35)}
+.reticle::after{inset:70px;border-style:dashed;animation:spin 40s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (max-width:920px){.reticle{display:none}}
+
+.setup{position:relative;background:linear-gradient(180deg,rgba(25,25,28,.92),rgba(12,12,14,.96));border:1px solid var(--line2);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:6px;
+  box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,42,61,.06) inset;backdrop-filter:blur(6px)}
+.step{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+.step:first-child{border-top:0;padding-top:2px}
+.num{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:800 18px/1 var(--display);color:var(--accent);background:var(--accent-soft);border:1px solid rgba(255,42,61,.35)}
+.stepbody{display:flex;flex-direction:column;gap:8px;min-width:0}
+.lbl{font:700 15px/1.1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--fg)}
+.search{position:relative}
+.search input{width:100%;padding:13px 14px 13px 40px;border:1px solid var(--line2);border-radius:10px;background:var(--bg);font-size:16px;font-weight:500}
+.search::before{content:"";position:absolute;left:14px;top:50%;width:14px;height:14px;transform:translateY(-55%);border:2px solid var(--muted);border-radius:50%;pointer-events:none}
+.search::after{content:"";position:absolute;left:26px;top:calc(50% + 5px);width:7px;height:2px;background:var(--muted);transform:rotate(45deg);pointer-events:none}
+.search input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(255,42,61,.18)}
+.results{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:var(--surface2);border:1px solid var(--line2);border-radius:10px;max-height:300px;overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.results button{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:10px 14px;border:0;background:none;cursor:pointer}
+.results button:hover,.results button[aria-selected="true"]{background:var(--surface3)}
+.results small{color:var(--muted);font-family:var(--mono);font-size:11px;white-space:nowrap}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px}
+.seg button{flex:1 1 0;min-width:0;border:0;border-radius:7px;padding:10px 6px;background:none;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
+.seg button:hover:not(:disabled){color:var(--fg)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff;box-shadow:0 4px 16px rgba(255,42,61,.35)}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.seg.digits button{font:800 18px/1 var(--display)}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.specs label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
+.specs input,.specs select{padding:8px 9px;border:1px solid var(--line2);border-radius:7px;background:var(--bg);font-family:var(--mono);font-size:13px;min-width:0}
+.range{display:flex;align-items:center;gap:10px}
+.range input{flex:1;accent-color:var(--accent)}
+.range output{font-family:var(--mono);font-size:13px;min-width:44px;text-align:right}
+details.more>summary{cursor:pointer;font:700 13px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);list-style:none;display:flex;align-items:center;gap:8px;padding:8px 0}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"+";display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1px solid var(--line2);border-radius:5px;color:var(--accent);font-family:var(--mono);font-size:13px}
+details.more[open]>summary::before{content:"−"}
+details.more>summary:hover{color:var(--fg)}
+details.more>summary .hint{text-transform:none;letter-spacing:0;font-family:var(--body);font-weight:400}
+details.more .specs{margin-top:6px}
+.morebody{display:flex;flex-direction:column;gap:16px;margin-top:8px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.field{display:flex;flex-direction:column;gap:7px}
+.field .lbl{font-size:13px;color:var(--muted)}
+.cta{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:8px;padding:15px;border-radius:12px;background:linear-gradient(180deg,#ff3b4d,var(--accent2));color:#fff;text-decoration:none;font:800 19px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;box-shadow:0 10px 30px rgba(255,42,61,.35);transition:transform .15s,box-shadow .15s}
+.cta:hover{transform:translateY(-1px);box-shadow:0 14px 36px rgba(255,42,61,.5)}
+
+/* ---------- results ---------- */
+.main{display:flex;flex-direction:column;gap:18px;padding-block:34px 20px;min-width:0;scroll-margin-top:8px}
+.resulthead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px}
+.resulthead h2{font:italic 900 clamp(30px,4.5vw,46px)/1 var(--display);text-transform:uppercase;margin-top:8px}
+.readout{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font:600 12px/1 var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 10px;background:var(--surface)}
+.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line2);background:var(--surface2);border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;font-size:14px;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 6px 20px rgba(255,42,61,.3)}
+.btn.primary:hover{background:#ff4456}
+.btn.small{padding:6px 11px;font-size:13px;border-radius:8px}
+.toast{font-size:13px;color:var(--good);font-weight:600}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;padding:12px 16px;font:700 18px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s}
+.tabs button:hover{color:var(--fg)}
+.tabs button[aria-selected="true"]{color:var(--fg);border-color:var(--accent)}
+.panel{display:flex;flex-direction:column;gap:16px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+
+.feel{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 20px;align-items:center;background:linear-gradient(110deg,var(--accent-soft),var(--surface) 65%);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px}
+.feel .big{font:italic 900 48px/1 var(--display);grid-row:span 2}
+.feel .big small{font-size:20px;color:var(--muted)}
+.feel b{font-weight:600}
+.feel .hint{grid-column:2}
+.swipebar{grid-column:1 / -1;height:8px;border-radius:4px;background:var(--surface3);position:relative;overflow:hidden;margin-top:8px}
+.swipebar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px;box-shadow:0 0 12px var(--glow)}
+@media (max-width:520px){.feel{grid-template-columns:minmax(0,1fr)}.feel .big{grid-row:auto}.feel .hint{grid-column:1}}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
+.card h3{font-size:20px;font-weight:800;text-transform:uppercase;display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.card h3 small{font:500 11px/1.3 var(--mono);color:var(--muted);text-transform:none;letter-spacing:0}
+.note{font-size:13px;color:var(--muted);margin:10px 0 0}
+
+/* game-style slider rows */
+.srows{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column}
+.srow{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(70px,1fr) 66px;align-items:center;gap:14px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.srow:first-child{border-top:0}
+.srow .nm{min-width:0}
+.srow .nm small{display:block;color:var(--dim);font-size:11.5px}
+.sl{position:relative;height:4px;border-radius:2px;background:var(--surface3)}
+.sl i{position:absolute;left:0;top:0;bottom:0;border-radius:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.sl b{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--accent);transform:translate(-50%,-50%);box-shadow:0 0 10px var(--glow);transition:left .45s cubic-bezier(.2,.8,.2,1)}
+.vb{font:700 15px/1 var(--mono);text-align:center;padding:7px 0;border:1px solid var(--line2);border-radius:7px;background:var(--bg);font-variant-numeric:tabular-nums}
+.vb.flash{animation:vflash 1s ease-out}
+@keyframes vflash{0%{border-color:var(--accent);color:var(--accent);box-shadow:0 0 14px var(--glow)}100%{}}
+.srow.off .sl,.srow.dim .sl{opacity:.4}
+.srow.off .vb{color:var(--dim);font-size:12px;font-weight:500}
+.srow.dim{opacity:.55}
+
+details.why{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:6px 18px 14px}
+details.why>summary{color:var(--fg);font-size:15px}
+.factors{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.factor{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.factor b{font-family:var(--mono);font-weight:600}
+.factor .up{color:var(--warn)} .factor .down{color:var(--good)}
+
+/* ---------- controls ---------- */
+.hudwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.phone{padding:10px;background:#000;border-radius:28px;box-shadow:inset 0 0 0 2px #2a2a2e,0 20px 50px rgba(0,0,0,.5)}
+.hud{position:relative;width:100%;border-radius:18px;overflow:hidden;container-type:inline-size;touch-action:none;user-select:none;background:#6f8aa3}
+.hud .scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hud::after{content:"";position:absolute;left:50%;top:50%;width:2.4cqw;height:2.4cqw;transform:translate(-50%,-50%);z-index:1;pointer-events:none;
+  background:linear-gradient(#fff,#fff) center/100% 1.5px no-repeat,linear-gradient(#fff,#fff) center/1.5px 100% no-repeat;filter:drop-shadow(0 0 1px #000)}
+/* fixed game HUD */
+.g-status,.g-team,.g-compass,.g-sys,.g-map,.g-hp{position:absolute;pointer-events:none;z-index:1;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.6)}
+.g-status{left:1%;top:2%;font:600 max(5px,.78cqw)/1 var(--mono);letter-spacing:.04em;background:rgba(0,0,0,.35);padding:.35cqw .6cqw;border-radius:.4cqw}
+.g-status b{color:#f5c518}
+.g-team{left:1%;top:7.5%;width:13%;display:flex;flex-direction:column;gap:.35cqw}
+.g-team div{display:grid;grid-template-columns:1.5cqw 1fr;grid-template-rows:auto .45cqw;column-gap:.4cqw;align-items:center;background:rgba(0,0,0,.3);padding:.25cqw .35cqw;border-radius:.3cqw}
+.g-team span{grid-row:span 2;width:1.5cqw;height:1.5cqw;border-radius:.25cqw;display:flex;align-items:center;justify-content:center;font:700 max(5px,.9cqw)/1 var(--mono);color:#111;text-shadow:none}
+.g-team em{font:600 max(5px,.85cqw)/1 var(--body);font-style:normal;white-space:nowrap;overflow:hidden}
+.g-team i{display:block;height:.35cqw;background:rgba(255,255,255,.25);border-radius:1px;overflow:hidden}
+.g-team s{display:block;height:100%;background:#fff;text-decoration:none}
+.g-compass{left:35%;top:2.2%;width:28%;display:flex;justify-content:space-between;align-items:center;font:600 max(5px,1cqw)/1 var(--mono);border-bottom:1px solid rgba(255,255,255,.5);padding-bottom:.5cqw}
+.g-compass span{opacity:.75}
+.g-compass .c{opacity:1;font-weight:700;color:#f5c518;position:relative}
+.g-compass .c::after{content:"";position:absolute;left:50%;bottom:-1.3cqw;border:.45cqw solid transparent;border-top-color:#f5c518;transform:translateX(-50%)}
+.g-sys{left:85.5%;width:2.6%;aspect-ratio:1;transform:translate(-50%,0);border-radius:50%;border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.3)}
+.g-map{left:88%;top:2%;width:11%;height:24%;border:1px solid rgba(255,255,255,.6);background:#4d5a3a;overflow:hidden;border-radius:2px}
+.g-map svg{width:100%;height:100%;display:block}
+.g-hp{left:38%;top:95.3%;width:24%;height:2.2%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.35);border-radius:1px}
+.g-hp i{display:block;height:100%;width:86%;background:#f2f2f2}
+/* buttons: see-through dark circles with white line icons, like the game */
+.hb{position:absolute;z-index:2;transform:translate(-50%,-50%);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15cqw;text-align:center;
+  background:rgba(12,14,16,.32);border:1.5px solid rgba(255,255,255,.6);color:#fff;cursor:default;aspect-ratio:1;backdrop-filter:blur(1.5px);box-shadow:0 1px 3px rgba(0,0,0,.35);transition:background .15s,border-color .15s}
+.hb svg{width:52%;height:auto;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.hb.sm svg{width:62%}
+.hb em{font:700 max(4.5px,.7cqw)/1 var(--display);font-style:normal;letter-spacing:.06em}
+.hb.pill{border-radius:.6cqw;aspect-ratio:2.6;gap:.2cqw;background:rgba(12,14,16,.45)}
+.hb.pill strong{font:800 max(5px,1.05cqw)/1 var(--display);letter-spacing:.06em}
+.hb.pill small{font:600 max(4.5px,.7cqw)/1 var(--mono);color:#f5c518}
+.hb.joy{background:radial-gradient(circle,rgba(255,255,255,.06) 0 60%,rgba(0,0,0,.22) 61%);border-width:2px}
+.hb.joy .knob{width:36%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.35);border:1.5px solid rgba(255,255,255,.75)}
+.hb.dragging{cursor:grabbing;z-index:5;border-color:var(--c);box-shadow:0 0 0 2px var(--c)}
+.hb .fx{position:absolute;top:2%;right:2%;width:1.1cqw;height:1.1cqw;min-width:5px;min-height:5px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+.hud.fingers .hb{border-color:var(--c);background:color-mix(in srgb,var(--c) 26%,rgba(12,14,16,.35))}
+/* claw layouts: team list sits under the big top-left fire button */
+.g-team.moved{top:42%;width:10%}
+.g-status.moved{left:19%;top:1.5%}
+/* editor-only pieces (hidden in match view) */
+.g-panel,.g-prompt,.g-cancel{display:none;position:absolute;pointer-events:none;z-index:1;color:#fff}
+.g-panel{left:38.5%;top:1.5%;width:27%;height:7.5%;align-items:stretch;gap:.4cqw;font:700 max(5px,.9cqw)/1 var(--display);letter-spacing:.04em}
+.g-panel span{display:flex;align-items:center;justify-content:center;flex:1;background:#2b2d30;border-radius:.3cqw}
+.g-panel .mode{flex:2.2}
+.g-panel .rs{background:#5ec8e8;color:#0d2a33}
+.g-panel .sv{background:#f5d90a;color:#2a2500}
+.g-prompt{width:6.4%;height:5.5%;align-items:center;justify-content:center;font:700 max(5px,.85cqw)/1 var(--display);background:rgba(30,32,35,.85);border-radius:.3cqw;transform:translate(-50%,-50%)}
+.g-cancel{width:4.4%;aspect-ratio:1;border-radius:50%;align-items:center;justify-content:center;font:700 max(4.5px,.7cqw)/1 var(--display);background:#e9e9e9;color:#333;transform:translate(-50%,-50%)}
+/* BGMI layout editor look: grey canvas, bright green outlines on everything */
+.hud.editor{background:linear-gradient(180deg,#45484c,#36393c)}
+.hud.editor .scene{display:none}
+.hud.editor .g-compass{display:none}
+.hud.editor .g-panel,.hud.editor .g-prompt,.hud.editor .g-cancel{display:flex}
+.hud.editor .hb,.hud.editor .g-team div,.hud.editor .g-map,.hud.editor .g-sys,.hud.editor .g-prompt,.hud.editor .g-cancel,.hud.editor .g-hp,.hud.editor .g-status,.hud.editor .g-panel{
+  border:1.5px solid #39ff3a;box-shadow:0 0 .5cqw rgba(57,255,58,.75),inset 0 0 .3cqw rgba(57,255,58,.35)}
+.hud.editor .hb{background:rgba(52,55,58,.92)}
+.hud.editor .hb.pill{background:#1f2124}
+.hud.editor .g-map{background:#2e3134}
+.hud.editor .g-map svg{opacity:.35}
+.hud.editor .g-hp i{background:#cfd2d6}
+.hud.editor.fingers .hb{border-color:var(--c);box-shadow:0 0 .6cqw var(--c);background:color-mix(in srgb,var(--c) 22%,#34373a)}
+.web{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.web h4{margin:0;font:800 18px/1.1 var(--display);text-transform:uppercase}
+.webgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px}
+.weblink{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid var(--line2);border-radius:10px;background:var(--surface2);color:var(--fg);text-decoration:none;transition:border-color .15s,transform .15s}
+.weblink:hover{border-color:var(--accent);transform:translateY(-1px)}
+.weblink .site{font:700 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.weblink b{font-weight:600;font-size:14.5px;line-height:1.3}
+.weblink span:not(.site){font-size:12.5px;color:var(--muted)}
+.weblink em{font-style:normal;font-size:12.5px;font-weight:600;color:var(--fg);margin-top:auto;padding-top:4px}
+.weblink.yt .site{color:#ff4e45}
+/* real layout screenshots */
+.shot{margin:0;display:flex;flex-direction:column;gap:10px}
+.shotbtn{display:block;width:100%;padding:8px;border:0;border-radius:24px;background:#000;box-shadow:inset 0 0 0 2px #2a2a2e,0 20px 50px rgba(0,0,0,.5);cursor:zoom-in}
+.shotbtn img{display:block;width:100%;height:auto;border-radius:16px}
+.shot figcaption{font-size:14px;color:var(--fg)}
+.shot figcaption .src{color:var(--muted);font-size:12.5px}
+.shotfull{max-width:min(100%,1400px);max-height:80vh;width:auto;height:auto;border-radius:12px;box-shadow:0 30px 90px rgba(0,0,0,.7)}
+.empty{border:1.5px dashed var(--line2);border-radius:var(--r);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.empty h4{margin:0;font:800 22px/1.1 var(--display);text-transform:uppercase}
+.empty p{margin:0;color:var(--muted);max-width:52ch}
+/* layout picker styled like BGMI's layout slots */
+.lpick{display:flex;flex-wrap:wrap;gap:8px}
+.lpick button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:130px;padding:9px 14px;border-radius:8px;border:1.5px solid var(--line2);background:#2b2d30;color:var(--fg);cursor:pointer;font:600 14px/1.1 var(--body);text-align:left}
+.lpick button b{font:700 11px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lpick button:hover{border-color:#39ff3a}
+.lpick button[aria-pressed="true"]{border-color:#39ff3a;box-shadow:0 0 10px rgba(57,255,58,.45);background:#22301f}
+.lpick button[aria-pressed="true"] b{color:#7dff7e}
+#layoutTip .src{color:var(--muted);font-size:12.5px}
+.g-team .follow{font:700 max(5px,.85cqw)/1 var(--display);text-align:center;padding:.45cqw 0;background:rgba(30,32,35,.85);border-radius:.3cqw}
+.hud.editor .g-team .follow{border:1.5px solid #39ff3a;box-shadow:0 0 .5cqw rgba(57,255,58,.75)}
+.g-map{display:flex;align-items:center;justify-content:center}
+.g-map span{font:700 max(6px,1.6cqw)/1 var(--display);color:#e9e9e9}
+.hb.pill strong{font-size:max(6px,1.6cqw)}
+.hb.pill small{color:#e9e9e9;font-family:var(--display);font-size:max(4.5px,.75cqw)}
+.rotate{display:none;text-align:center}
+@media (max-width:600px) and (orientation:portrait){.rotate{display:block}}
+.btn.toggle[aria-pressed="true"]{border-color:var(--accent);color:#fff;background:var(--accent-soft)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:50%;background:var(--c);display:inline-block}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.list{list-style:none;padding:0;margin:10px 0 0}
+.list li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.list li:first-child{border-top:0}
+.list li b{font-weight:600;text-align:right}
+.fingerlist li span{display:flex;align-items:center;gap:8px}
+.fingerlist i{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+
+/* ---------- fine tune ---------- */
+.symptoms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px}
+.sym{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px 16px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:border-color .15s,transform .15s}
+.sym:hover{border-color:var(--accent);transform:translateY(-1px)}
+.sym strong{font-weight:600}
+.sym span{font-size:12.5px;color:var(--muted)}
+.sym em{font-style:normal;font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+.history{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.days{list-style:none;margin:10px 0 0;padding:0}
+.days li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.days li:first-child{border-top:0}
+.days b{font-family:var(--display);font-size:15px;text-transform:uppercase;color:var(--accent)}
+
+/* ---------- share card ---------- */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:auto}
+.modal .mhint{color:var(--muted);font-size:13px;text-align:center;margin:0}
+.sc{width:min(100%,400px);border-radius:22px;overflow:hidden;border:1px solid var(--line2);
+  background:radial-gradient(90% 60% at 0% 0%,rgba(255,42,61,.28),transparent 60%),linear-gradient(180deg,#121214,#070708);box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 0 1px rgba(255,42,61,.12) inset}
+.sc-head{display:flex;align-items:center;gap:10px;padding:16px 18px 6px}
+.sc-head img{width:36px;height:36px;border-radius:50%;box-shadow:0 0 0 2px var(--accent)}
+.sc-head .wm{font-size:22px}
+.sc-head .tag{font-size:11px;padding:4px 6px;margin-left:auto}
+.sc-dev{padding:4px 18px 12px}
+.sc-dev h4{margin:0;font:italic 900 28px/1 var(--display);text-transform:uppercase}
+.sc-dev p{margin:6px 0 0;font:600 11.5px/1.3 var(--mono);color:var(--muted)}
+.sc table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.sc th{font:700 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding:8px 4px;text-align:right}
+.sc th:first-child{text-align:left;padding-left:18px}
+.sc td{font:700 13px/1 var(--mono);text-align:right;padding:7px 4px;border-top:1px solid rgba(255,255,255,.06)}
+.sc td:first-child{text-align:left;padding-left:18px;font:500 12px/1 var(--body);color:#c9cbd1}
+.sc th:last-child,.sc td:last-child{padding-right:18px}
+.sc td.na{color:var(--dim);font-weight:500}
+.sc-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 18px 16px;font:600 11px/1.3 var(--mono);color:var(--muted);border-top:1px solid rgba(255,255,255,.06);margin-top:6px}
+.sc-foot b{color:var(--accent)}
+
+/* ---------- 3D ---------- */
+/* perspective grid floor under the hero */
+.floor{position:absolute;left:-25%;right:-25%;bottom:-2px;height:58%;pointer-events:none;transform-origin:50% 100%;transform:perspective(520px) rotateX(64deg);
+  background-image:linear-gradient(rgba(255,42,61,.55) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(255,42,61,.45) 1.5px,transparent 1.5px);background-size:64px 64px;
+  -webkit-mask-image:linear-gradient(to top,#000 10%,transparent 85%);mask-image:linear-gradient(to top,#000 10%,transparent 85%);animation:floor 3.2s linear infinite;opacity:.55}
+@keyframes floor{to{background-position:0 64px,0 0}}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);box-shadow:0 0 24px var(--accent)}
+/* extruded 3D headline word */
+.pitch h1 em{position:relative;text-shadow:1px 1px 0 #b80d1d,2px 2px 0 #a00b19,3px 3px 0 #8a0915,4px 4px 0 #730711,5px 5px 0 #5c050d,6px 6px 14px rgba(0,0,0,.6),0 0 34px var(--glow)}
+.pitch h1{text-shadow:0 2px 0 #2a2a2e,0 4px 12px rgba(0,0,0,.6)}
+/* floating 3D phone showing live values */
+.stage3d{position:relative;margin-top:30px;height:200px;perspective:900px;display:flex;justify-content:flex-start;align-items:center}
+.phone3d{--px:10deg;--py:-18deg;position:relative;width:min(360px,92%);aspect-ratio:2.1;transform-style:preserve-3d;transform:rotateX(var(--px)) rotateY(var(--py)) rotateZ(-2deg);transition:transform .25s ease-out;animation:bob 5s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -10px}}
+.p3d-screen{position:absolute;inset:0;border-radius:22px;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+  background:radial-gradient(120% 90% at 20% 10%,rgba(255,42,61,.25),transparent 55%),linear-gradient(160deg,#1c1d21,#0a0a0c);
+  border:6px solid #050506;box-shadow:inset 0 0 0 1px #2c2d33,0 0 0 1px #3a3b42,0 30px 60px rgba(0,0,0,.7),0 0 40px rgba(255,42,61,.25);transform:translateZ(14px)}
+.p3d-screen::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.1) 45%,transparent 55%);pointer-events:none}
+.p3d-side{position:absolute;inset:4px;border-radius:22px;background:linear-gradient(90deg,#2a2b31,#121216);transform:translateZ(-2px)}
+.p3d-top{display:flex;justify-content:space-between;font:700 10px/1 var(--mono);color:var(--muted);letter-spacing:.08em}
+.p3d-top b{color:var(--accent)}
+.p3d-cross{position:absolute;left:50%;top:48%;width:26px;height:26px;transform:translate(-50%,-50%);border:1.5px solid rgba(255,255,255,.7);border-radius:50%;
+  background:linear-gradient(#fff,#fff) center/100% 1.5px no-repeat,linear-gradient(#fff,#fff) center/1.5px 100% no-repeat}
+.p3d-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.p3d-stats div{background:rgba(0,0,0,.45);border:1px solid rgba(255,42,61,.35);border-radius:8px;padding:6px 8px;transform:translateZ(10px)}
+.p3d-stats small{display:block;font:700 8.5px/1 var(--mono);letter-spacing:.1em;color:var(--muted)}
+.p3d-stats b{font:italic 900 20px/1.1 var(--display);color:#fff}
+.p3d-shadow{position:absolute;left:8%;bottom:6px;width:60%;height:18px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,42,61,.45),transparent);filter:blur(6px);animation:shadow 5s ease-in-out infinite}
+@keyframes shadow{50%{transform:scale(.88);opacity:.7}}
+@media (max-width:920px){.stage3d{height:170px;justify-content:center}}
+/* tilting cards with a moving glare */
+.tilt{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s ease-out,box-shadow .2s;transform-style:preserve-3d;position:relative}
+.tilt::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .2s;background:radial-gradient(400px circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.07),transparent 40%)}
+.tilt:hover{box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 0 1px rgba(255,42,61,.25)}
+.tilt:hover::before{opacity:1}
+/* chunky pressable buttons */
+.btn.primary,.cta,.seg button[aria-pressed="true"]{box-shadow:0 4px 0 #8a0915,0 8px 22px rgba(255,42,61,.35)}
+.btn.primary:active,.cta:active{transform:translateY(3px);box-shadow:0 1px 0 #8a0915,0 4px 12px rgba(255,42,61,.3)}
+.setup{transform:perspective(1200px) rotateY(-4deg) rotateX(2deg);transform-origin:center}
+@media (max-width:920px){.setup{transform:none}}
+/* pro codes */
+.procards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:14px;align-items:start}
+.pc-head{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+.pc-badge{width:46px;height:46px;flex:none;border-radius:12px;display:flex;align-items:center;justify-content:center;font:italic 900 26px/1 var(--display);color:#fff;
+  background:linear-gradient(145deg,#ff3b4d,#8a0915);box-shadow:0 4px 0 #5c050d,0 8px 18px rgba(255,42,61,.35);transform:translateZ(20px)}
+.procard h3{font-size:24px}
+.pc-setup{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.pc-setup span{font:600 11px/1 var(--mono);color:var(--muted);border:1px solid var(--line2);border-radius:999px;padding:4px 8px}
+.pc-code{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+.pc-row{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"type type" "code btn";gap:6px 10px;align-items:center}
+.pc-type{grid-area:type;font:700 12px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.pc-row code{grid-area:code;font:700 15px/1.2 var(--mono);letter-spacing:.03em;background:var(--bg);border:1px solid var(--line2);border-radius:8px;padding:9px 10px;overflow-wrap:anywhere}
+.pc-row .btn{grid-area:btn}
+.pc-note{margin:6px 0 0;font-size:12.5px;color:var(--warn)}
+.pc-src{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.pc-src a{color:var(--fg)}
+.pc-vals{margin-top:12px;border-top:1px solid var(--line);padding-top:4px}
+.pc-vals>summary{cursor:pointer;font:700 14px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--fg);padding:8px 0;list-style:none;display:flex;align-items:center;gap:8px}
+.pc-vals>summary::-webkit-details-marker{display:none}
+.pc-vals>summary::before{content:"+";display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border:1px solid var(--line2);border-radius:5px;color:var(--accent);font-family:var(--mono);font-size:13px}
+.pc-vals[open]>summary::before{content:"−"}
+.pc-tw{overflow-x:auto}
+.pc-vals table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.pc-vals th{font:700 11px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);padding:6px 4px;text-align:right;white-space:nowrap}
+.pc-vals td{font:600 12.5px/1.2 var(--mono);padding:6px 4px;text-align:right;border-top:1px solid var(--line);white-space:nowrap}
+.pc-vals th:first-child,.pc-vals td:first-child{text-align:left;font-family:var(--body);font-weight:500;color:var(--muted)}
+.pc-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pc-links a{font:600 12.5px/1 var(--body);color:var(--fg);text-decoration:none;border:1px solid var(--line2);border-radius:999px;padding:8px 12px;background:var(--surface2);transition:border-color .15s}
+.pc-links a:hover{border-color:#ff4e45}
+.pc-links b{color:#ff4e45;font-size:11px}
+.warnline{color:var(--warn)}
+.prohead .toast{display:block;margin-top:6px}
+@media (prefers-reduced-motion:reduce){.phone3d,.p3d-shadow,.floor{animation:none}.tilt{transform:none}}
+.foot{padding-block:20px 40px;font-size:12.5px;color:var(--dim);border-top:1px solid var(--line);margin-top:28px}
+#copyArea{position:absolute;left:-9999px;top:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+/* ---------- 3D & motion pass 2 ---------- */
+@property --ang{syntax:"<angle>";inherits:false;initial-value:0deg}
+/* glass sticky top bar */
+.top{position:sticky;top:0;z-index:40;background:rgba(6,6,6,.72);box-shadow:0 0 0 100vmax rgba(6,6,6,.72);clip-path:inset(0 -100vmax);backdrop-filter:blur(12px) saturate(1.4);-webkit-backdrop-filter:blur(12px) saturate(1.4)}
+.brand{position:relative}
+.brand::before{content:"";position:absolute;left:-5px;top:50%;width:54px;height:54px;margin-top:-27px;border-radius:50%;border:1.5px dashed rgba(255,42,61,.6);animation:spin 12s linear infinite;pointer-events:none}
+/* rising embers behind the hero */
+.embers{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:block}
+/* headline shine sweep */
+.pitch h1 em::after{content:attr(data-text);position:absolute;left:0;top:0;color:transparent;text-shadow:none;background:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.95) 50%,transparent 65%) 0 0/250% 100% no-repeat;-webkit-background-clip:text;background-clip:text;animation:sweep 4.5s ease-in-out infinite;pointer-events:none}
+@keyframes sweep{0%{background-position:150% 0}55%,100%{background-position:-60% 0}}
+/* gyro rings orbiting the 3D phone */
+.rings{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;pointer-events:none}
+.rings i{--s:300px;position:absolute;left:0;top:0;width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:50%;border:1.5px solid rgba(255,42,61,.55);box-shadow:0 0 18px rgba(255,42,61,.35),inset 0 0 18px rgba(255,42,61,.2);transform-style:preserve-3d}
+.rings i::after{content:"";position:absolute;left:50%;top:-5px;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff,0 0 22px var(--accent)}
+.rings i:nth-child(1){animation:orb1 7s linear infinite}
+.rings i:nth-child(2){--s:250px;border-color:rgba(255,255,255,.35);animation:orb2 9s linear infinite}
+.rings i:nth-child(3){--s:350px;border-style:dashed;border-color:rgba(255,42,61,.3);box-shadow:none;animation:orb3 14s linear infinite}
+@keyframes orb1{from{transform:rotateX(72deg) rotateZ(0)}to{transform:rotateX(72deg) rotateZ(360deg)}}
+@keyframes orb2{from{transform:rotateY(68deg) rotateZ(0)}to{transform:rotateY(68deg) rotateZ(-360deg)}}
+@keyframes orb3{from{transform:rotateX(58deg) rotateY(24deg) rotateZ(0)}to{transform:rotateX(58deg) rotateY(24deg) rotateZ(360deg)}}
+@media (max-width:520px){.rings i{--s:230px}.rings i:nth-child(2){--s:190px}.rings i:nth-child(3){--s:270px}}
+/* scanner line + pulsing crosshair on the phone */
+.p3d-screen::before{content:"";position:absolute;left:0;right:0;top:-35%;height:35%;background:linear-gradient(transparent,rgba(255,42,61,.22),transparent);animation:scan 3.4s linear infinite;pointer-events:none}
+@keyframes scan{to{top:100%}}
+.p3d-cross{animation:xpulse 2.2s ease-in-out infinite}
+@keyframes xpulse{50%{transform:translate(-50%,-50%) scale(1.25);border-color:var(--accent);box-shadow:0 0 14px var(--glow)}}
+/* animated neon border on the setup card */
+.setup::before{content:"";position:absolute;inset:-1px;border-radius:21px;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--ang),transparent 0 62%,rgba(255,42,61,.9) 76%,#fff 82%,rgba(255,42,61,.9) 88%,transparent 96%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:ang 5s linear infinite}
+@keyframes ang{to{--ang:360deg}}
+/* CTA shimmer */
+.cta{position:relative;overflow:hidden}
+.cta::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);animation:shine 3.2s ease-in-out infinite;pointer-events:none}
+@keyframes shine{55%,100%{left:130%}}
+/* extruded results title */
+.resulthead h2{text-shadow:1px 1px 0 #2e2e33,2px 2px 0 #26262a,3px 3px 0 #1d1d21,4px 4px 10px rgba(0,0,0,.6),0 0 30px rgba(255,42,61,.25)}
+/* tabs: glowing underline, panels swing in */
+.tabs button[aria-selected="true"]{text-shadow:0 0 16px var(--glow);border-image:linear-gradient(90deg,transparent,var(--accent),transparent) 1}
+.panel:not([hidden]){animation:panelIn .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes panelIn{from{opacity:0;transform:perspective(1400px) rotateX(6deg) translateY(18px)}}
+.main{overflow-x:clip}
+/* HUD corner brackets on cards */
+.card{position:relative}
+.card::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .2s;
+  background:linear-gradient(var(--accent),var(--accent)) 0 0/16px 2px,linear-gradient(var(--accent),var(--accent)) 0 0/2px 16px,
+  linear-gradient(var(--accent),var(--accent)) 100% 0/16px 2px,linear-gradient(var(--accent),var(--accent)) 100% 0/2px 16px,
+  linear-gradient(var(--accent),var(--accent)) 0 100%/16px 2px,linear-gradient(var(--accent),var(--accent)) 0 100%/2px 16px,
+  linear-gradient(var(--accent),var(--accent)) 100% 100%/16px 2px,linear-gradient(var(--accent),var(--accent)) 100% 100%/2px 16px;background-repeat:no-repeat}
+.card:hover::after{opacity:1}
+/* pro badge flips like a coin */
+.procard:hover .pc-badge{animation:coin .9s cubic-bezier(.3,.7,.3,1)}
+@keyframes coin{from{transform:translateZ(20px) rotateY(0)}to{transform:translateZ(20px) rotateY(360deg)}}
+/* cards fly in in 3D when they come into view */
+.rv:not(.rv-in){opacity:0}
+.rv.rv-in{animation:rvIn .7s cubic-bezier(.2,.8,.2,1) var(--d,0ms) backwards}
+@keyframes rvIn{from{opacity:0;transform:perspective(900px) rotateX(22deg) translateY(28px) scale(.97)}}
+/* cursor spotlight (desktop only, set from JS) */
+.spot{position:fixed;inset:0;pointer-events:none;z-index:1;mix-blend-mode:screen;background:radial-gradient(520px circle at var(--mx,-999px) var(--my,-999px),rgba(255,42,61,.08),transparent 60%)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rings,.embers,.spot{display:none}}
+</style>
+
+<header class="wrap top">
+  <a class="brand" href="#top" aria-label="Noxix Sens Lab">
+    <img class="mark" id="logo" src="data:image/webp;base64,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" alt="" width="44" height="44">
+    <span class="wm">NO<b>X</b>IX</span><span class="tag">SENS LAB</span>
+  </a>
+  <nav class="socials" aria-label="Noxix channels">
+    <a href="https://www.youtube.com/@Noxix-Gaming" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.instagram.com/noxix_gaming/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://kick.com/noxixgaming" target="_blank" rel="noopener">Kick</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <div class="floor" aria-hidden="true"></div>
+  <canvas class="embers" id="embers" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <div class="pitch">
+      <p class="eyebrow"><i></i>Free · BGMI &amp; PUBG Mobile</p>
+      <h1>Sensitivity built for <em data-text="your">your</em> phone</h1>
+      <p class="lede">Pick your phone, your grip and gyro. Get every camera, ADS and gyro value, layout guides and pro players' codes, in seconds.</p>
+      <ul class="proof">
+        <li><b>110+</b>phones &amp; tablets</li>
+        <li><b>35</b>values per setup</li>
+        <li><b>Pro</b>player codes</li>
+      </ul>
+      <div class="stage3d" aria-hidden="true">
+        <div class="phone3d" id="phone3d">
+          <div class="rings"><i></i><i></i><i></i></div>
+          <div class="p3d-side"></div>
+          <div class="p3d-screen">
+            <div class="p3d-top"><span>NO<b>X</b>IX SENS</span><span id="p3dDev">—</span></div>
+            <div class="p3d-cross"></div>
+            <div class="p3d-stats">
+              <div><small>CAMERA</small><b id="p3dCam">—</b></div>
+              <div><small>RED DOT</small><b id="p3dRed">—</b></div>
+              <div><small>GYRO</small><b id="p3dGyro">—</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="p3d-shadow"></div>
+      </div>
+    </div>
+
+    <div class="setupwrap">
+      <div class="reticle" aria-hidden="true"></div>
+      <div class="setup" aria-label="Your setup">
+        <div class="step"><span class="num">1</span>
+          <div class="stepbody">
+            <span class="lbl">Your phone</span>
+            <div class="search">
+              <input id="devSearch" type="search" autocomplete="off" placeholder="Search, e.g. iQOO Neo 9 Pro" aria-label="Search your phone" role="combobox" aria-expanded="false" aria-controls="devResults">
+              <div class="results" id="devResults" role="listbox" hidden></div>
+            </div>
+            <details class="more">
+              <summary>Phone not listed?</summary>
+              <div class="specs">
+                <label>Screen (inches)<input id="spSize" type="number" step="0.01" min="4" max="14"></label>
+                <label>Max BGMI FPS<select id="spFps"><option value="60">60</option><option value="90">90</option><option value="120">120</option></select></label>
+                <label>System<select id="spOs"><option value="android">Android</option><option value="ios">iOS / iPadOS</option></select></label>
+                <label>Gyroscope<select id="spGyro"><option value="1">Yes</option><option value="0">No</option></select></label>
+              </div>
+              <p class="hint" style="margin-top:6px">Type your phone's name above, pick "use with my own specs", then enter its screen size here.</p>
+            </details>
+          </div>
+        </div>
+        <div class="step"><span class="num">2</span>
+          <div class="stepbody">
+            <span class="lbl">Fingers you play with</span>
+            <div class="seg digits" id="segFingers" role="group" aria-label="Number of fingers"></div>
+          </div>
+        </div>
+        <div class="step"><span class="num">3</span>
+          <div class="stepbody">
+            <span class="lbl">Gyroscope</span>
+            <div class="seg" id="segGyro" role="group" aria-label="Gyroscope mode"></div>
+          </div>
+        </div>
+        <details class="more" id="moreOpts">
+          <summary>More options <span class="hint">optional</span></summary>
+          <div class="morebody">
+            <div class="field"><span class="lbl">Aim style</span><div class="seg" id="segAim" role="group" aria-label="Aim style"></div></div>
+            <div class="field"><span class="lbl">Role in squad</span><div class="seg" id="segRole" role="group" aria-label="Role"></div></div>
+            <div class="field"><span class="lbl">Spray control</span><div class="seg" id="segRecoil" role="group" aria-label="Recoil control"></div></div>
+            <div class="field"><span class="lbl">Overall speed</span><div class="range"><input id="overall" type="range" min="70" max="150" step="1" aria-label="Overall speed"><output id="overallOut"></output></div></div>
+            <div class="field"><span class="lbl">Switching from another phone?</span>
+              <div class="specs">
+                <label>Old phone<select id="convDev"><option value="">Not switching</option></select></label>
+                <label>Its Camera TPP %<input id="convTpp" type="number" min="1" max="400" step="1" placeholder="e.g. 140"></label>
+              </div>
+              <p class="hint">Keeps the exact feel of the sens you already use.</p>
+            </div>
+          </div>
+        </details>
+        <a class="cta" href="#results">Show my sensitivity <span aria-hidden="true">↓</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap main" id="results">
+  <div class="resulthead">
+    <div>
+      <p class="eyebrow">Your setup</p>
+      <h2 id="resTitle"></h2>
+      <div class="readout" id="readout"></div>
+    </div>
+    <div class="actions">
+      <span class="toast" id="toastSens" aria-live="polite"></span>
+      <button class="btn" id="openCard" type="button">Share card</button>
+      <button class="btn primary" id="copySens" type="button">Copy all values</button>
+    </div>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-sens" aria-controls="p-sens">Sensitivity</button>
+    <button role="tab" id="tab-ctrl" aria-controls="p-ctrl">Controls</button>
+    <button role="tab" id="tab-tune" aria-controls="p-tune">Fine-tune</button>
+    <button role="tab" id="tab-pro" aria-controls="p-pro">Pro codes</button>
+  </nav>
+
+  <section class="panel" id="p-sens" role="tabpanel" aria-labelledby="tab-sens">
+    <div class="feel" id="feel"></div>
+    <div class="cards" id="sensCards"></div>
+    <details class="why more"><summary>How it's calculated</summary><div class="factors" id="factors"></div>
+      <p class="note">In BGMI a swipe turns the camera by how much of the screen width you cover. A wider screen needs a higher value for the same thumb movement, so Sens Lab uses your screen's real width to give the same comfortable swipe on any phone. Each scope is set to about 0.88 ÷ its zoom, so every scope feels consistent. Gyro works by tilt, so it barely depends on screen size.</p></details>
+  </section>
+
+  <section class="panel" id="p-ctrl" role="tabpanel" aria-labelledby="tab-ctrl" hidden>
+    <div class="hudwrap">
+      <div class="bar">
+        <h3 id="layoutTitle" style="font-size:22px;text-transform:uppercase"></h3>
+      </div>
+      <p class="hint" style="color:var(--fg);font-size:14px">Open a guide to see the real layout, then copy it in BGMI: Settings → Controls → Customize, and tap Save.</p>
+      <div class="web" id="webLayouts"></div>
+    </div>
+    <div class="two">
+      <div class="card"><h3>Who presses what</h3><ul class="list fingerlist" id="fingerList"></ul></div>
+      <div class="card"><h3>Control settings</h3><ul class="list" id="ctrlSettings"></ul></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-pro" role="tabpanel" aria-labelledby="tab-pro" hidden>
+    <div class="card prohead">
+      <h3>Pro &amp; creator codes <small id="proChecked"></small></h3>
+      <p class="note">Codes that famous BGMI players and creators have shared, collected from published articles and checked regularly. Tap <b>Copy</b>, then in BGMI go to <b>Settings → Sensitivity → Layout Management → Search</b> (control codes: <b>Settings → Controls → Customize → Layout Management</b>), paste the code, preview and apply. Open <b>Sensitivity values</b> on a card to copy a player's numbers by hand, or watch their setup videos on YouTube.</p>
+      <p class="note warnline">Shared codes can expire after BGMI updates. If the game says a code is invalid, try that player's other code, or copy their values by hand.</p>
+      <span class="toast" id="toastPro" aria-live="polite"></span>
+    </div>
+    <div class="procards" id="proCards"></div>
+  </section>
+
+  <section class="panel" id="p-tune" role="tabpanel" aria-labelledby="tab-tune" hidden>
+    <div class="card">
+      <h3>Play a match, then tap what felt wrong <small id="tuneDevice"></small></h3>
+      <p class="note">Each tap fixes only the values behind that problem. Tap again if it's still off.</p>
+    </div>
+    <div class="symptoms" id="symptoms"></div>
+    <div class="two">
+      <div class="card"><h3>Your adjustments <button class="btn small" id="resetTune">Clear</button></h3><div class="history" id="history" style="margin-top:10px"></div></div>
+      <div class="card"><h3>7-day adaptation drill</h3><ul class="days" id="days"></ul></div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap foot">Made by Noxix. Using this setup? Tag @noxix_gaming in your clips. Noxix Sens Lab is an independent fan tool, not affiliated with KRAFTON, BGMI or PUBG Mobile. Device specs are approximate. Sensitivity and layout codes are generated by the game itself after you save a setup there.</footer>
+
+<div class="modal" id="cardModal" role="dialog" aria-modal="true" aria-label="Share card" hidden>
+  <div class="sc" id="shareCard"></div>
+  <p class="mhint">Take a screenshot and post it. Tag <b>@noxix_gaming</b> so we can repost the best ones.</p>
+  <button class="btn" id="closeCard" type="button">Close</button>
+</div>
+<textarea id="copyArea" aria-hidden="true" tabindex="-1"></textarea>
+<div class="spot" aria-hidden="true"></div>
+
+<script>
+(function(){
+// ---------- data ----------
+// [name, brand, os, size, maxFps, gyro(1/0), aspect(w/h)]
+const DEVICES = [
+ ["iPhone 11","Apple","ios",6.1,60,1,2.16],["iPhone 12","Apple","ios",6.1,60,1,2.16],["iPhone 13","Apple","ios",6.1,60,1,2.16],
+ ["iPhone 13 Pro Max","Apple","ios",6.7,120,1,2.16],["iPhone 14","Apple","ios",6.1,60,1,2.16],["iPhone 14 Pro","Apple","ios",6.1,120,1,2.17],
+ ["iPhone 14 Pro Max","Apple","ios",6.7,120,1,2.17],["iPhone 15","Apple","ios",6.1,60,1,2.17],["iPhone 15 Plus","Apple","ios",6.7,60,1,2.17],
+ ["iPhone 15 Pro","Apple","ios",6.1,120,1,2.17],["iPhone 15 Pro Max","Apple","ios",6.7,120,1,2.17],["iPhone 16","Apple","ios",6.1,60,1,2.17],
+ ["iPhone 16 Plus","Apple","ios",6.7,60,1,2.17],["iPhone 16 Pro","Apple","ios",6.3,120,1,2.17],["iPhone 16 Pro Max","Apple","ios",6.9,120,1,2.17],
+ ["iPhone 17","Apple","ios",6.3,60,1,2.17],["iPhone 17 Pro","Apple","ios",6.3,120,1,2.17],["iPhone 17 Pro Max","Apple","ios",6.9,120,1,2.17],
+ ["iPad 10th gen","Apple","ios",10.9,60,1,1.44],["iPad Air 11 (M2/M3)","Apple","ios",11,60,1,1.43],["iPad Pro 11 (M4)","Apple","ios",11,120,1,1.43],
+ ["iPad mini (7th gen)","Apple","ios",8.3,60,1,1.52],
+ ["Galaxy S23","Samsung","android",6.1,120,1,2.17],["Galaxy S24","Samsung","android",6.2,120,1,2.17],["Galaxy S24 Ultra","Samsung","android",6.8,120,1,2.17],
+ ["Galaxy S24 FE","Samsung","android",6.7,90,1,2.17],["Galaxy S25 Ultra","Samsung","android",6.9,120,1,2.17],["Galaxy A35","Samsung","android",6.6,60,1,2.17],
+ ["Galaxy A55","Samsung","android",6.6,60,1,2.17],["Galaxy M35","Samsung","android",6.6,60,1,2.17],["Galaxy Tab S9 FE","Samsung","android",10.9,60,1,1.6],
+ ["OnePlus 12","OnePlus","android",6.82,120,1,2.22],["OnePlus 13","OnePlus","android",6.82,120,1,2.22],["OnePlus 12R","OnePlus","android",6.78,120,1,2.22],
+ ["OnePlus Nord 4","OnePlus","android",6.74,90,1,2.22],["OnePlus Nord CE4","OnePlus","android",6.7,90,1,2.22],["OnePlus Pad 2","OnePlus","android",12.1,120,1,1.43],
+ ["Poco F6","Xiaomi","android",6.67,120,1,2.22],["Poco F7","Xiaomi","android",6.83,90,1,2.22],["Poco X6 Pro","Xiaomi","android",6.67,120,1,2.22],
+ ["Poco X7 Pro","Xiaomi","android",6.67,90,1,2.22],["Poco M6 Pro","Xiaomi","android",6.67,60,1,2.22],["Redmi Note 13 Pro","Xiaomi","android",6.67,90,1,2.22],
+ ["Redmi Note 14 Pro+","Xiaomi","android",6.67,90,1,2.22],["Redmi 13C","Xiaomi","android",6.74,60,1,2.22],["Xiaomi Pad 6","Xiaomi","android",11,90,1,1.6],
+ ["iQOO 12","iQOO","android",6.78,120,1,2.22],["iQOO 13","iQOO","android",6.82,120,1,2.22],["iQOO Neo 9 Pro","iQOO","android",6.78,120,1,2.22],
+ ["iQOO Neo 10R","iQOO","android",6.78,90,1,2.22],["iQOO Z9","iQOO","android",6.67,90,1,2.22],["iQOO Z9s Pro","iQOO","android",6.77,90,1,2.22],
+ ["Vivo T3 Ultra","Vivo","android",6.78,90,1,2.22],["Vivo V30","Vivo","android",6.78,90,1,2.22],["Vivo T3x","Vivo","android",6.72,60,1,2.22],
+ ["Realme GT 6","Realme","android",6.78,120,1,2.22],["Realme GT 7 Pro","Realme","android",6.78,120,1,2.22],["Realme 12 Pro+","Realme","android",6.7,90,1,2.22],
+ ["Realme Narzo 70 Pro","Realme","android",6.67,90,1,2.22],["Motorola Edge 50 Pro","Motorola","android",6.7,90,1,2.22],["Motorola G85","Motorola","android",6.67,60,1,2.22],
+ ["Nothing Phone (2a)","Nothing","android",6.7,90,1,2.22],["Nothing Phone (3)","Nothing","android",6.67,90,1,2.22],["Pixel 8","Google","android",6.2,60,1,2.22],
+ ["Pixel 9 Pro","Google","android",6.3,120,1,2.22],["ROG Phone 8","Asus","android",6.78,120,1,2.22],["ROG Phone 9","Asus","android",6.78,120,1,2.22],
+ ["Infinix GT 20 Pro","Infinix","android",6.78,90,1,2.22],["Tecno Pova 6 Pro","Tecno","android",6.78,60,1,2.22],["Lava Agni 3","Lava","android",6.78,90,1,2.22],
+ // 2025–2026 releases (max BGMI FPS from the October 2026 120 FPS device list; others set to their likely cap)
+ ["Galaxy S26 Ultra","Samsung","android",6.9,120,1,2.17],["Galaxy S26+","Samsung","android",6.7,120,1,2.17],["Galaxy S26","Samsung","android",6.3,120,1,2.17],
+ ["Galaxy S25","Samsung","android",6.2,120,1,2.17],["Galaxy S25+","Samsung","android",6.7,120,1,2.17],["Galaxy S25 FE","Samsung","android",6.7,90,1,2.17],
+ ["Galaxy Z Fold7 (unfolded)","Samsung","android",8,120,1,1.13],["Galaxy A56","Samsung","android",6.7,60,1,2.17],["Galaxy A36","Samsung","android",6.7,60,1,2.17],
+ ["Galaxy Tab S10 FE","Samsung","android",10.9,90,1,1.6],
+ ["iPhone 18 Pro Max","Apple","ios",6.9,120,1,2.17],["iPhone 18 Pro","Apple","ios",6.3,120,1,2.17],["iPhone Air","Apple","ios",6.5,60,1,2.17],["iPhone 17e","Apple","ios",6.1,60,1,2.16],
+ ["iPad Pro 11 (M5)","Apple","ios",11,120,1,1.43],["iPad Pro 13 (M5)","Apple","ios",13,120,1,1.33],["iPad Air 13 (M3)","Apple","ios",13,60,1,1.33],
+ ["OnePlus 15","OnePlus","android",6.78,120,1,2.22],["OnePlus 15R","OnePlus","android",6.83,120,1,2.22],["OnePlus 13R","OnePlus","android",6.78,120,1,2.22],
+ ["OnePlus Nord 5","OnePlus","android",6.83,90,1,2.22],["OnePlus Nord CE5","OnePlus","android",6.77,90,1,2.22],
+ ["iQOO 15","iQOO","android",6.85,120,1,2.22],["iQOO Neo 10","iQOO","android",6.78,90,1,2.22],["iQOO Z10","iQOO","android",6.77,90,1,2.22],
+ ["Poco F7 Pro","Xiaomi","android",6.67,120,1,2.22],["Poco F7 Ultra","Xiaomi","android",6.67,120,1,2.22],["Xiaomi 15","Xiaomi","android",6.36,120,1,2.22],
+ ["Xiaomi 15T Pro","Xiaomi","android",6.83,120,1,2.22],["Redmi Note 15 Pro+","Xiaomi","android",6.83,90,1,2.22],
+ ["Vivo X300 Pro","Vivo","android",6.78,120,1,2.22],["Vivo X200 Pro","Vivo","android",6.78,120,1,2.22],["Vivo T4 Ultra","Vivo","android",6.67,90,1,2.22],["Vivo V60","Vivo","android",6.77,90,1,2.22],
+ ["Oppo Find X9 Pro","Oppo","android",6.78,120,1,2.22],["Oppo Find X8","Oppo","android",6.59,120,1,2.22],["Oppo Reno14 Pro","Oppo","android",6.83,90,1,2.22],
+ ["Realme GT 7","Realme","android",6.78,90,1,2.22],["Pixel 10 Pro XL","Google","android",6.8,120,1,2.22],["Pixel 10 Pro","Google","android",6.3,120,1,2.22],["Pixel 10","Google","android",6.3,90,1,2.22],
+ ["Nothing Phone (3a)","Nothing","android",6.77,90,1,2.22],["Motorola Edge 60 Pro","Motorola","android",6.7,90,1,2.22],
+ ["ROG Phone 9 Pro","Asus","android",6.78,120,1,2.22],["RedMagic 10 Pro","Nubia","android",6.85,120,1,2.22],["RedMagic 11 Pro","Nubia","android",6.85,120,1,2.22]
+].map(d=>({name:d[0],brand:d[1],os:d[2],size:d[3],fps:d[4],gyro:!!d[5],aspect:d[6]}));
+
+const ROWS = [["tpp","TPP no scope"],["fpp","FPP no scope"],["red","Red dot, Holo, Aim assist"],["x2","2x scope"],["x3","3x scope, Win94"],["x4","4x scope, VSS"],["x6","6x scope"],["x8","8x scope"]];
+const BAND = {tpp:"close",fpp:"close",red:"close",x2:"close",x3:"mid",x4:"mid",x6:"long",x8:"long"};
+// ---------- the model ----------
+// A swipe turns the camera by a share of the screen width, not by cm:
+//   turn° = K × sens% × (swipe cm ÷ landscape screen width cm)
+// So the same thumb swipe for the same turn on any phone needs sens ∝ screen width.
+function widthCm(diag,aspect){return diag*aspect/Math.sqrt(1+aspect*aspect)*2.54}
+const REF_W = widthCm(6.5,2.22);            // 15.06 cm, a typical 6.5" 20:9 phone
+// K = degrees turned per 1% Camera TPP for a full-width swipe. KRAFTON doesn't publish it.
+// Default is calibrated so a 6.5" phone played 4-finger lands at 130%, the middle of the 120–140% players report.
+
+const DEFAULT_K = 180*REF_W/(130*5);         // ≈ 4.17
+const K = DEFAULT_K;
+// Comfortable 180° swipe for the aiming thumb, by grip (cm). Thumb players fire with the same thumb, so shorter.
+const SWIPE_CM = {2:4.0,3:4.5,4:5.0,5:5.4,6:5.8};
+const AIM_CM = {steady:1.15,balanced:1,flick:0.85};
+// Scope curves as a share of TPP no-scope. Scopes follow ≈0.88 ÷ magnification, which keeps the
+// crosshair moving the same distance on screen for the same swipe; this matches published player setups.
+const CURVE = {
+  cam:{tpp:1,fpp:0.95,red:0.53,x2:0.44,x3:0.29,x4:0.22,x6:0.147,x8:0.11},
+  ads:{tpp:0.92,fpp:0.88,red:0.5,x2:0.42,x3:0.28,x4:0.21,x6:0.14,x8:0.105},
+  gyro:{tpp:1,fpp:1,red:1,x2:0.97,x3:0.82,x4:0.68,x6:0.42,x8:0.32},
+  adsGyro:{tpp:1,fpp:1,red:1,x2:0.97,x3:0.84,x4:0.68,x6:0.4,x8:0.3}
+};
+// Gyro turns by tilt angle, which doesn't depend on screen size; heavier, wider devices get a small boost.
+const GYRO_REF = 240;
+const ROLE = {rusher:{tpp:1.04,fpp:1.04,red:1.08,x2:1.08,x3:1,x4:1,x6:0.92,x8:0.92},flex:{},support:{tpp:0.97,fpp:0.97,red:1,x2:1,x3:0.92,x4:0.92,x6:0.85,x8:0.85}};
+const MAX = {cam:400,ads:400,gyro:400,adsGyro:400};
+const SECTIONS = [["cam","Camera","Swipe to look around (not firing)"],["ads","ADS","While firing / aiming down sights"],["gyro","Gyroscope","Tilt to look around"],["adsGyro","ADS Gyroscope","Tilt while firing"]];
+
+const OPTS = {
+  fingers:[[2,"2"],[3,"3"],[4,"4"],[5,"5"],[6,"6"]],
+  gyroMode:[["off","Off"],["scope","Scope on"],["always","Always on"]],
+  aim:[["steady","Steady"],["balanced","Balanced"],["flick","Flicks"]],
+  role:[["rusher","Rusher"],["flex","Flex"],["support","Sniper"]],
+  recoil:[["low","Kicks up"],["ok","Fine"],["over","Pulls low"]]
+};
+
+// ---------- state ----------
+const LS = {get(k,d){try{const v=localStorage.getItem("senslab:"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("senslab:"+k,JSON.stringify(v))}catch(e){}}};
+const defDev = DEVICES.find(d=>d.name==="Poco X6 Pro");
+const S = Object.assign({
+  device:{...defDev}, fingers:4, gyroMode:"scope", aim:"balanced", role:"flex", recoil:"ok", overall:100, tab:"sens"
+}, LS.get("state",{}));
+
+function save(){LS.set("state",S)}
+function tuneKey(){return "tune:"+S.device.name}
+function getTune(){return LS.get(tuneKey(),{mult:{},log:[]})}
+
+// ---------- calculation ----------
+function convFrom(){
+  const c=S.conv; if(!c||!c.dev||!(+c.tpp>0)) return null;
+  const od=DEVICES.find(x=>x.name===c.dev); if(!od) return null;
+  return {od,oW:widthCm(od.size,od.aspect),tpp:+c.tpp,raw:+c.tpp};
+}
+function factors(){
+  const d=S.device, f=[];
+  const size=Math.max(4,Math.min(14,+d.size||6.5)), ar=+d.aspect||2.22;
+  const W=widthCm(size,ar);
+  const ov=S.overall/100;
+  const conv=convFrom();
+  // target: cm of swipe for a 180° turn
+  let cm = conv ? 180*conv.oW/(K*conv.raw) : SWIPE_CM[S.fingers]*AIM_CM[S.aim];
+  cm/=ov;
+  const gyroOK=d.gyro&&S.gyroMode!=="off";
+  const look=gyroOK&&S.gyroMode==="always"?0.85:1;  // tilt does part of the turning
+  const raw=180*W/(K*cm);
+  const camTpp=raw*look;
+  const freeTpp=raw;
+  const gSize=Math.pow(W/REF_W,0.3);
+  const gFing={2:1.08,3:1.04,4:1,5:0.97,6:0.95}[S.fingers];
+  const gAim={steady:0.88,balanced:1,flick:1.12}[S.aim];
+  const gyroTpp=GYRO_REF*gSize*gFing*gAim*(1+(ov-1)*0.6);
+  const recoil={low:1.12,ok:1,over:0.88}[S.recoil];
+  f.push({k:`Screen ${W.toFixed(1)} cm wide`,v:W/REF_W,note:size+'" display'});
+  f.push({k:conv?`Matched to ${conv.od.name} at ${conv.tpp}%`:`${S.fingers}-finger, ${S.aim} aim`,v:null,note:`180° turn = ${cm.toFixed(1)} cm swipe`});
+  if(look!==1) f.push({k:"Always-on gyro",v:look,note:"camera; ADS scopes ×0.70"});
+  if(gyroOK&&S.gyroMode==="scope") f.push({k:"Scope gyro",v:0.9,note:"ADS scopes"});
+  if(!gyroOK) f.push({k:"No gyro",v:1.08,note:"ADS red dot to 4x"});
+  if(S.role!=="flex") f.push({k:S.role==="rusher"?"Rusher":"Sniper",v:S.role==="rusher"?1.08:0.85,note:S.role==="rusher"?"red dot, 2x":"6x, 8x"});
+  if(recoil!==1) f.push({k:S.recoil==="low"?"Spray kicks up":"Spray pulls low",v:recoil,note:"ADS scopes"});
+  if(ov!==1&&!conv) f.push({k:"Overall speed",v:ov});
+  return {W,cm,camTpp,freeTpp,gyroTpp,recoil,gyroOK,conv,list:f};
+}
+function compute(){
+  const F=factors(), t=getTune(), out={};
+  const role=ROLE[S.role];
+  for(const [sec] of SECTIONS){
+    out[sec]={};
+    const isGyro = sec==="gyro"||sec==="adsGyro";
+    for(const [k] of ROWS){
+      if(isGyro&&!F.gyroOK){out[sec][k]=null;continue}
+      const scoped = k!=="tpp"&&k!=="fpp";
+      let v=(isGyro?F.gyroTpp:F.camTpp)*CURVE[sec][k]*(role[k]||1);
+      if((sec==="ads"||sec==="adsGyro")&&scoped) v*=F.recoil;
+      if(sec==="ads"&&scoped){
+        if(!F.gyroOK&&(k==="red"||k==="x2"||k==="x3"||k==="x4")) v*=1.08;
+        if(F.gyroOK&&S.gyroMode==="scope") v*=0.9;
+        if(F.gyroOK&&S.gyroMode==="always") v*=0.7/0.85; // wrists handle recoil: ADS scopes ≈30% lower overall
+      }
+      v*=(t.mult[sec+"."+BAND[k]]||1);
+      out[sec][k]=Math.max(1,Math.min(MAX[sec],Math.round(v)));
+    }
+  }
+  const fr=x=>Math.max(1,Math.min(400,Math.round(x)));
+  out.free={tpp:fr(F.freeTpp*0.85),fpp:fr(F.freeTpp*0.8),para:fr(F.freeTpp*0.8)};
+  out.feel=F;
+  return out;
+}
+
+// ---------- UI: setup ----------
+const $=id=>document.getElementById(id);
+function seg(id,key,opts){
+  const el=$(id); el.innerHTML="";
+  for(const [v,label] of opts){
+    const b=document.createElement("button"); b.type="button"; b.textContent=label;
+    b.setAttribute("aria-pressed",String(S[key]===v));
+    b.onclick=()=>{S[key]=v; save(); renderAll()};
+    el.appendChild(b);
+  }
+}
+function syncSpecs(){
+  $("spSize").value=S.device.size; $("spFps").value=String(S.device.fps);
+  $("spOs").value=S.device.os; $("spGyro").value=S.device.gyro?"1":"0";
+  $("devSearch").value=S.device.name;
+}
+function onSpec(){
+  const d=S.device;
+  const nd={...d,size:+$("spSize").value||d.size,fps:+$("spFps").value,os:$("spOs").value,gyro:$("spGyro").value==="1"};
+  const base=DEVICES.find(x=>x.name===d.name.replace(/ \(edited\)$/,""));
+  const same=base&&base.size===nd.size&&base.fps===nd.fps&&base.os===nd.os&&base.gyro===nd.gyro;
+  const root=d.name.replace(/ \(edited\)$/,"");
+  nd.name= same?root:(DEVICES.some(x=>x.name===root)?root+" (edited)":root);
+  S.device=nd; save(); renderAll();
+}
+["spSize","spFps","spOs","spGyro"].forEach(id=>$(id).addEventListener("change",onSpec));
+
+// device search
+const inp=$("devSearch"), res=$("devResults"); let hits=[], sel=-1;
+function showResults(q){
+  q=q.trim().toLowerCase();
+  hits = DEVICES.filter(d=>!q||(d.brand+" "+d.name).toLowerCase().includes(q)).slice(0,12);
+  const custom = q && !hits.some(h=>h.name.toLowerCase()===q);
+  res.innerHTML="";
+  hits.forEach((d,i)=>{
+    const b=document.createElement("button"); b.type="button"; b.setAttribute("role","option");
+    b.innerHTML=`<span>${d.name}</span><small>${d.size}" · ${d.fps}fps</small>`;
+    b.onmousedown=e=>{e.preventDefault(); pick(d)};
+    res.appendChild(b);
+  });
+  if(custom){
+    const b=document.createElement("button"); b.type="button";
+    b.innerHTML=`<span>Use "${inp.value.trim()}" with my own specs</span><small>custom</small>`;
+    b.onmousedown=e=>{e.preventDefault(); pick({name:inp.value.trim(),brand:"Custom",os:"android",size:6.67,fps:90,gyro:true,aspect:2.22}); $("spSize").focus()};
+    res.appendChild(b); hits.push(null);
+  }
+  res.hidden=!res.children.length; inp.setAttribute("aria-expanded",String(!res.hidden)); sel=-1;
+}
+function pick(d){S.device={...d}; save(); res.hidden=true; inp.setAttribute("aria-expanded","false"); renderAll()}
+inp.addEventListener("focus",()=>{inp.select(); showResults("")});
+inp.addEventListener("input",()=>showResults(inp.value));
+inp.addEventListener("blur",()=>setTimeout(()=>{res.hidden=true; inp.value=S.device.name},120));
+inp.addEventListener("keydown",e=>{
+  const items=[...res.children]; if(res.hidden||!items.length) return;
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault(); sel=(sel+(e.key==="ArrowDown"?1:-1)+items.length)%items.length;
+    items.forEach((b,i)=>b.setAttribute("aria-selected",String(i===sel))); items[sel].scrollIntoView({block:"nearest"})}
+  if(e.key==="Enter"){e.preventDefault(); const t=items[Math.max(0,sel)]; t&&t.dispatchEvent(new MouseEvent("mousedown"))}
+  if(e.key==="Escape"){res.hidden=true; inp.blur()}
+});
+$("overall").addEventListener("input",e=>{S.overall=+e.target.value; save(); renderAll()});
+$("convDev").innerHTML+=DEVICES.map(d=>`<option>${d.name}</option>`).join("");
+function onConv(){const dev=$("convDev").value, tpp=+$("convTpp").value; S.conv={dev,tpp:tpp>0?Math.min(400,tpp):0}; save(); renderAll()}
+$("convDev").addEventListener("change",onConv); $("convTpp").addEventListener("change",onConv);
+
+// ---------- UI: tabs ----------
+const TABS=["sens","ctrl","tune","pro"];
+TABS.forEach(t=>$("tab-"+t).onclick=()=>{S.tab=t; save(); renderTabs()});
+function renderTabs(){TABS.forEach(t=>{$("tab-"+t).setAttribute("aria-selected",String(S.tab===t)); $("p-"+t).hidden=S.tab!==t})}
+
+
+// ---------- pro codes ----------
+// The block between the PRO-DATA markers is rewritten by the scheduled updater. Keep it valid JSON.
+/*PRO-DATA*/
+const PRO = {
+ "checked":"2026-11-21",
+ "players":[
+  {"name":"Scout","setup":["4-finger claw","Gyro always on","iPhone 17 Pro Max"],"codes":[{"type":"Sensitivity","code":"6974-6421-0793-9028-995","reported":"2026-08-28","sources":[{"site":"Sports Angam","url":"https://sportsangam.com/scout-op-sensitivity-2026/"},{"site":"SportsDigest","url":"https://sportsdigest.in/scout-bgmi-sensitivity-setting-control-code/202030/"}]},{"type":"Control","code":"6974-6421-0793-9028-994","reported":"2026-08-18","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/scout-bgmi-sensitivity-setting-control-code/202030/"}]}],"sens":{"site":"SportsDigest","url":"https://sportsdigest.in/scout-bgmi-sensitivity-setting-control-code/202030/","reported":"2026-08-18","cam":["80%","88%","50%","30%","21%","10%","25%","40%"],"ads":["80%","88%","50%","30%","20%","10%","25%","30%"],"gyro":["300%","300%","350%","250%","250%","60%","60%","30%"]}},
+  {"name":"Snax","setup":["Full gyro","iPhone 17 Pro Max / iQOO 15"],"codes":[{"type":"Sensitivity","code":"6983-8734-6621-3601-887","reported":"2026-07-30","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/snax-bgmi-sensitivity-code-controls/199250/"}]},{"type":"Control","code":"6974-6292-0638-3659-575","reported":"2026-07-30","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/snax-bgmi-sensitivity-code-controls/199250/"}]}],"sens":{"site":"SportsDigest","url":"https://sportsdigest.in/snax-bgmi-sensitivity-code-controls/199250/","reported":"2026-07-30","cam":["55%","55%","30%","30%","11%","10%","7%","7%"],"ads":["1%","1%","1%","1%","1%","1%","1%","1%"],"gyro":["300%","300%","300%","300%","250%","185%","110%","90%"],"adsGyro":["300%","300%","300%","300%","250%","185%","110%","90%"]}},
+  {"name":"Jonathan","setup":["3-finger claw","Gyro always on","120 FPS"],"codes":[{"type":"Latest code","note":"Sources disagree whether this is his sensitivity or control code.","code":"7238-4338-0842-0180-522","reported":"2026-05-04","sources":[{"site":"BGMI Tools","url":"https://bgmitools.com/pro-bgmi-sensitivity-codes/"},{"site":"Sportsdunia","url":"https://www.sportsdunia.com/gaming/jonathan-bgmi-id-sensitivity-code"}]},{"type":"Sensitivity (older)","note":"Widely shared but years old; may have expired.","code":"7120-0815-5403-4938-964","reported":"2026-08-24","sources":[{"site":"SportsAdda","url":"https://www.sportsadda.asia/esports/features-esports/jonathan-bgmi-sensitivity-code-control-id-settings/"},{"site":"Weekly Esports","url":"https://weeklyesports.com/2025/04/03/jonathan-sensitivity-code/"}]},{"type":"Control (older)","note":"Widely shared but years old; may have expired.","code":"7120-0815-5403-4938-963","reported":"2026-08-24","sources":[{"site":"SportsAdda","url":"https://www.sportsadda.asia/esports/features-esports/jonathan-bgmi-sensitivity-code-control-id-settings/"}]}]},
+  {"name":"Goblin","setup":["4-finger claw","Gyro always on","90 FPS"],"codes":[{"type":"Sensitivity","code":"7052-1263-8794-9809-050","reported":"2026-07-27","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/?p=199201"}]},{"type":"Control","code":"7052-8733-5614-2449-514","reported":"2026-07-27","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/?p=199201"}]},{"type":"Code (older)","note":"Earlier code, type not stated by the source; may have expired.","code":"7307-1085-6780-4282-435","reported":"2026-05-04","sources":[{"site":"BGMI Tools","url":"https://bgmitools.com/pro-bgmi-sensitivity-codes/"}]}],"sens":{"site":"SportsDigest","url":"https://sportsdigest.in/?p=199201","reported":"2026-07-27","cam":["300%","300%","30%","29%","20%","18%","19%","13%"],"ads":["300%","300%","30%","30%","13%","12%","18%","13%"],"gyro":["400%","400%","250%","250%","185%","171%","111%","89%"],"adsGyro":["400%","400%","250%","248%","185%","185%","110%","90%"]}},
+  {"name":"Omega","setup":["iPhone 17 Pro Max"],"codes":[{"type":"Sensitivity","code":"7052-8819-3269-9304-092","reported":"2026-08-05","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/bgmi-omega-sensitivity-code-controls/199926/"}]},{"type":"Control","code":"7052-8819-3269-9304-091","reported":"2026-08-05","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/bgmi-omega-sensitivity-code-controls/199926/"}]}],"sens":{"site":"SportsDigest","url":"https://sportsdigest.in/bgmi-omega-sensitivity-code-controls/199926/","reported":"2026-08-05","cam":["111%","112%","50%","50%","27%","24%","17%","18%"],"ads":["111%","111%","55%","55%","27%","30%","1%","1%"],"gyro":["300%","300%","350%","350%","300%","245%","81%","80%"],"adsGyro":["300%","300%","350%","350%","300%","245%","150%","150%"]}},
+  {"name":"Hector","setup":[],"codes":[{"type":"Sensitivity","code":"7052-8758-8975-1627-725","reported":"2026-08-16","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/?p=199628"}]},{"type":"Control","code":"7052-8758-8975-1627-724","reported":"2026-08-16","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/?p=199628"}]}],"sens":{"site":"SportsDigest","url":"https://sportsdigest.in/?p=199628","reported":"2026-08-16","cam":["95%","94%","32%","30%","21%","14%","11%","10%"],"ads":["95%","94%","32%","30%","21%","14%","11%","10%"],"gyro":["235%","235%","360%","350%","134%","130%","120%","49%"],"adsGyro":["230%","235%","360%","350%","180%","160%","119%","34%"]}},
+  {"name":"LoLzZz Gaming","setup":["iPhone 17 Pro Max"],"channel":"https://www.youtube.com/channel/UCI1vyXBgX3bruwvChLMNxjQ","codes":[{"type":"Sensitivity","code":"7072-8881-9971-0907-457","reported":"2026-08-02","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/lolzzz-gaming-bgmi-sensitivity-control-code/199216/"}]},{"type":"Control","code":"7076-2873-9160-7032-188","reported":"2026-08-02","sources":[{"site":"SportsDigest","url":"https://sportsdigest.in/lolzzz-gaming-bgmi-sensitivity-control-code/199216/"}]}],"sens":{"site":"SportsDigest","url":"https://sportsdigest.in/lolzzz-gaming-bgmi-sensitivity-control-code/199216/","reported":"2026-08-02","cam":["55%","80%","13%","30%","6%","6%","5%","4%"],"ads":["55%","80%","1%","1%","1%","1%","1%","1%"],"gyro":["271%","400%","300%","169%","180%","180%","65%","60%"],"adsGyro":["271%","400%","300%","300%","255%","205%","175%","64%"]}},
+  {"name":"Dynamo","setup":["4-finger claw","Gyro scope on","60/90 FPS"],"codes":[{"type":"Control","code":"7128-4471-2299-3401-220","reported":"2026-05-04","sources":[{"site":"BGMI Tools","url":"https://bgmitools.com/pro-bgmi-sensitivity-codes/"}]}]},
+  {"name":"Mortal","setup":["2-thumb","No gyro","60 FPS"],"codes":[{"type":"Control","code":"6983-8762-7023-5848-120","reported":"2026-05-04","sources":[{"site":"BGMI Tools","url":"https://bgmitools.com/pro-bgmi-sensitivity-codes/"}]}]},
+  {"name":"Regaltos","setup":["3-finger claw"],"codes":[{"type":"Control","code":"7076-2544-8818-7641-054","reported":"2024-12-22","sources":[{"site":"Khel Now","url":"https://khelnow.com/gaming/bgmi-regaltos-control-settings-sensitivity-202412"}]}],"sens":{"site":"Khel Now","url":"https://khelnow.com/gaming/bgmi-regaltos-control-settings-sensitivity-202412","reported":"2024-12-22","cam":["73%","84%","50%","30%","22%","14%","12%","10%"],"ads":["73%","84%","50%","39%","22%","14%","12%","10%"],"gyro":["150%","95%","140%","221%","227%","147%","40%","35%"],"adsGyro":["250%","95%","240%","221%","227%","147%","40%","35%"]}},
+  {"name":"NinjaJOD","setup":["2-finger"],"codes":[{"type":"Control","code":"7120-0793-5103-3379-601","reported":"2025-01-09","sources":[{"site":"Khel Now","url":"https://khelnow.com/gaming/ninjajod-bgmi-control-code-202501"}]}],"sens":{"site":"Khel Now","url":"https://khelnow.com/gaming/ninjajod-bgmi-control-code-202501","reported":"2025-01-09","cam":["120%","120%","1%","15%","22%","17%","60%","60%"],"ads":["76%","76%","1%","1%","1%","1%","6%","6%"],"gyro":["400%","400%","300%","300%","235%","200%","60%","60%"]}},
+  {"name":"SPower","setup":["4-finger claw","High-end iOS / Android"],"codes":[],"sens":{"site":"SportsDigest","url":"https://sportsdigest.in/?p=202315","reported":"2026-08-22","note":"Approximate values (~) as published. The source gives one table for gyro and ADS gyro.","cam":["120%","~100% – 110%","100%","~70%","~55%","50%","~20%","~12%"],"ads":["~95%","~90%","85%","~65%","~45%","40%","~18%","~10%"],"gyro":["300% – 350%","300%","300%","~280%","~245%","250% – 260%","~80%","~65%"]}}
+ ]
+};
+/*END-PRO-DATA*/
+const fmtDate=d=>{try{return new Date(d+"T00:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}catch(e){return d}};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// Pro sensitivity values: arrays in this row order, one array per section.
+const PV_ROWS=["TPP no scope","FPP no scope","Red dot","2x","3x","4x","6x","8x"];
+const PV_COLS=[["cam","Camera"],["ads","ADS"],["gyro","Gyro"],["adsGyro","ADS gyro"]];
+function proVals(s){
+  if(!s) return "";
+  const cols=PV_COLS.filter(([k])=>Array.isArray(s[k]));
+  if(!cols.length) return "";
+  const cell=v=>v==null||v===""?"–":esc(v);
+  return `<details class="pc-vals"><summary>Sensitivity values</summary><div class="pc-tw"><table><thead><tr><th>Scope</th>${cols.map(([,t])=>`<th>${t}</th>`).join("")}</tr></thead><tbody>${PV_ROWS.map((l,i)=>`<tr><td>${l}</td>${cols.map(([c])=>`<td>${cell(s[c][i])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${s.note?`<p class="pc-note">${esc(s.note)}</p>`:""}<p class="pc-src">Reported ${fmtDate(s.reported)} · <a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.site)} ↗</a></p></details>`;
+}
+function proLinks(p){
+  const yt="https://www.youtube.com/results?search_query="+encodeURIComponent(p.name+" BGMI sensitivity settings");
+  return `<div class="pc-links"><a href="${yt}" target="_blank" rel="noopener"><b>▶</b> ${esc(p.name)} sensitivity videos ↗</a>${p.channel?`<a href="${esc(p.channel)}" target="_blank" rel="noopener"><b>▶</b> YouTube channel ↗</a>`:""}</div>`;
+}
+function renderPro(){
+  $("proChecked").textContent="Last checked "+fmtDate(PRO.checked);
+  $("proCards").innerHTML=PRO.players.map(p=>`<article class="card procard tilt"><div class="pc-head"><span class="pc-badge">${esc(p.name[0])}</span><div><h3>${esc(p.name)}</h3><div class="pc-setup">${(p.setup||[]).map(x=>`<span>${esc(x)}</span>`).join("")}</div></div></div>
+    ${(p.codes||[]).map(c=>`<div class="pc-code"><div class="pc-row"><span class="pc-type">${esc(c.type)}</span><code>${esc(c.code)}</code><button type="button" class="btn small primary" data-copy="${esc(c.code)}">Copy</button></div>
+      ${c.note?`<p class="pc-note">${esc(c.note)}</p>`:""}<p class="pc-src">Reported ${fmtDate(c.reported)} · ${c.sources.map(x=>`<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.site)} ↗</a>`).join(" · ")}</p></div>`).join("")}
+    ${(p.codes||[]).length?"":`<p class="pc-src" style="margin-top:10px">No shareable code published yet. Set the values below by hand.</p>`}
+    ${proVals(p.sens)}${proLinks(p)}</article>`).join("");
+  $("proCards").querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>{copy(b.dataset.copy,"toastPro"); const t=b.textContent; b.textContent="Copied"; setTimeout(()=>b.textContent=t,1400)});
+}
+// ---------- 3D motion ----------
+const fine=(()=>{try{return matchMedia("(hover:hover) and (pointer:fine)").matches}catch(e){return false}})();
+const still=(()=>{try{return matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return false}})();
+if(fine&&!still){
+  document.addEventListener("pointermove",e=>{
+    const el=e.target.closest&&e.target.closest(".tilt"); if(!el) return;
+    const r=el.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+    el.style.setProperty("--ry",(x*8).toFixed(2)+"deg"); el.style.setProperty("--rx",(-y*8).toFixed(2)+"deg");
+    el.style.setProperty("--gx",((x+.5)*100).toFixed(1)+"%"); el.style.setProperty("--gy",((y+.5)*100).toFixed(1)+"%");
+  });
+  document.addEventListener("pointerout",e=>{const el=e.target.closest&&e.target.closest(".tilt"); if(el&&!el.contains(e.relatedTarget)){el.style.setProperty("--rx","0deg");el.style.setProperty("--ry","0deg")}});
+  const hero=document.querySelector(".hero"), ph=$("phone3d");
+  hero.addEventListener("pointermove",e=>{const r=hero.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+    ph.style.setProperty("--py",(-18+x*22).toFixed(1)+"deg"); ph.style.setProperty("--px",(10-y*14).toFixed(1)+"deg")});
+}
+function update3d(r){
+  $("p3dDev").textContent=S.device.name; $("p3dCam").textContent=r.cam.tpp+"%"; $("p3dRed").textContent=r.cam.red+"%";
+  $("p3dGyro").textContent=r.gyro.tpp==null?"OFF":r.gyro.tpp+"%";
+}
+// ---------- UI: sensitivity ----------
+let prevR=null;
+const reduce=(()=>{try{return matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return false}})();
+function countUp(root){
+  const els=[...root.querySelectorAll(".vb[data-to]")];
+  const done=()=>els.forEach(e=>e.textContent=e.dataset.to+"%");
+  if(reduce||!els.some(e=>e.dataset.from!==e.dataset.to)){done();return}
+  const t0=performance.now(), dur=650;
+  const step=now=>{
+    const k=Math.min(1,(now-t0)/dur), ease=1-Math.pow(1-k,3);
+    for(const e of els){const a=+e.dataset.from,b=+e.dataset.to; e.textContent=Math.round(a+(b-a)*ease)+"%"}
+    if(k<1) requestAnimationFrame(step); else done();
+  };
+  requestAnimationFrame(step);
+  setTimeout(done,dur+400); // finish even if animation frames are paused
+}
+// ---------- share card ----------
+function renderCard(){
+  const r=compute(), d=S.device, gy=S.device.gyro&&S.gyroMode!=="off";
+  const cols=[["cam","Cam"],["ads","ADS"]].concat(gy?[["gyro","Gyro"],["adsGyro","ADS G"]]:[]);
+  const short={tpp:"TPP",fpp:"FPP",red:"Red dot",x2:"2x",x3:"3x",x4:"4x",x6:"6x",x8:"8x"};
+  const rows=ROWS.map(([k])=>`<tr><td>${short[k]}</td>${cols.map(([s])=>r[s][k]==null?`<td class="na">–</td>`:`<td>${r[s][k]}</td>`).join("")}</tr>`).join("");
+  $("shareCard").innerHTML=`<div class="sc-head"><img src="${$("logo").src}" alt=""><span class="wm">NO<b>X</b>IX</span><span class="tag">SENS LAB</span></div>
+    <div class="sc-dev"><h4>${d.name}</h4><p>${d.size}" · ${S.fingers}-finger · gyro ${OPTS.gyroMode.find(o=>o[0]===S.gyroMode)[1].toLowerCase()} · free look ${r.free.tpp}%</p></div>
+    <table><thead><tr><th>Scope</th>${cols.map(([,t])=>`<th>${t}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table>
+    <div class="sc-foot"><span>Get yours free</span><b>@noxix_gaming</b></div>`;
+}
+$("openCard").onclick=()=>{renderCard(); $("cardModal").hidden=false; $("closeCard").focus()};
+$("closeCard").onclick=()=>{$("cardModal").hidden=true; $("openCard").focus()};
+$("cardModal").addEventListener("click",e=>{if(e.target.id==="cardModal") $("closeCard").click()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("cardModal").hidden) $("closeCard").click()});
+function renderSens(){
+  const r=compute(), F=factors(), p=prevR;
+  let changed=0;
+  // slider rows styled like the in-game settings: knob sits at value ÷ 400
+  const row=(label,v,max,offText,pv,dim)=>{
+    if(v==null) return `<li class="srow off"><span class="nm">${label}</span><span class="sl"></span><span class="vb">${offText||"off"}</span></li>`;
+    const pos=Math.min(100,v/400*100), from=(pv!=null&&p)?pv:(p?v:0);
+    const d=(pv!=null&&p)?v-pv:0; if(d) changed++;
+    return `<li class="srow${dim?" dim":""}"><span class="nm">${label}${dim?`<small>Always on only</small>`:""}</span><span class="sl"><i style="width:${pos}%"></i><b style="left:${pos}%"></b></span><span class="vb${d?" flash":""}" data-to="${v}" data-from="${from}">${from}%</span></li>`;
+  };
+  const cards=[];
+  cards.push(`<div class="card tilt"><h3>Free look <small>camera eye button</small></h3><ul class="srows">
+    ${[["tpp","TPP camera"],["fpp","FPP camera"],["para","Parachuting"]].map(([k,l])=>row(l,r.free[k],400,"",p&&p.free[k])).join("")}</ul></div>`);
+  for(const [sec,title,sub] of SECTIONS){
+    const vals=r[sec]; const allOff=ROWS.every(([k])=>vals[k]==null);
+    let body;
+    if(allOff){
+      body=`<p class="note">${!S.device.gyro?"This device has no gyroscope, so leave gyro off.":"Gyroscope is off for your setup. Pick “Scope on” or “Always on” in the left panel to get these values."}</p>`;
+    }else{
+      const isG=sec==="gyro"||sec==="adsGyro", scopeOnly=isG&&S.gyroMode==="scope";
+      body=`<ul class="srows">${ROWS.map(([k,l])=>row(l,vals[k],MAX[sec],"off",p&&p[sec][k],scopeOnly&&(k==="tpp"||k==="fpp"))).join("")}</ul>`
+        +(scopeOnly?`<p class="note">You picked <b>Scope on</b>, so gyro only works while you're scoped. Set the no-scope values anyway; they only take effect if you switch to Always on.</p>`:"");
+    }
+    cards.push(`<div class="card tilt"><h3>${title} <small>${sub} · max ${MAX[sec]}%</small></h3>${body}</div>`);
+  }
+  $("sensCards").innerHTML=cards.join("");
+  countUp($("sensCards"));
+  const fe=r.feel, pct=Math.min(100,fe.cm/fe.W*100);
+  $("feel").innerHTML=`<div class="big">${fe.cm.toFixed(1)}<small> cm</small></div>
+    <div><b>Swipe for a 180° turn</b> on your ${fe.W.toFixed(1)} cm wide screen, about ${Math.round(pct)}% of its width.</div>
+    <p class="hint">${fe.conv?`Matched to how ${fe.conv.tpp}% feels on your ${fe.conv.od.name}.`:`Set for ${S.fingers}-finger ${S.aim} aim. You get this same swipe on any phone you pick.`}</p>
+    <div class="swipebar" aria-hidden="true"><i style="width:${pct}%"></i></div>`;
+  if(p&&changed) flash("toastSens",changed+" values updated");
+  prevR=r; update3d(r);
+  const ex=[...F.list];
+  const t=getTune(); const nT=Object.keys(t.mult).length;
+  if(nT) ex.push({k:"Your fine-tune",v:null,note:nT+" group"+(nT>1?"s":"")+" adjusted"});
+  $("factors").innerHTML=ex.map(f=>`<span class="factor">${f.k} ${f.v==null?"":`<b class="${f.v>1.001?"up":f.v<0.999?"down":""}">×${f.v.toFixed(2)}</b>`}${f.note?` <span class="hint">${f.note}</span>`:""}</span>`).join("");
+}
+function sensText(){
+  const r=compute(), d=S.device;
+  let s=`Noxix Sens Lab setup — ${d.name} (${d.size}", ${d.fps} FPS, ${d.os==="ios"?"iOS":"Android"})\n${S.fingers}-finger · gyro ${OPTS.gyroMode.find(o=>o[0]===S.gyroMode)[1]} · ${S.aim} aim · ${S.role}\n\n`;
+  s+=`Feel: 180° turn = ${r.feel.cm.toFixed(1)} cm swipe on a ${r.feel.W.toFixed(1)} cm wide screen\n\n`;
+  s+=`FREE LOOK\n  TPP camera: ${r.free.tpp}%\n  FPP camera: ${r.free.fpp}%\n  Parachuting: ${r.free.para}%\n`;
+  for(const [sec,title] of SECTIONS){
+    if(ROWS.every(([k])=>r[sec][k]==null)) continue;
+    s+=`\n${title.toUpperCase()}\n`;
+    for(const [k,l] of ROWS) if(r[sec][k]!=null) s+=`  ${l}: ${r[sec][k]}%${(sec==="gyro"||sec==="adsGyro")&&S.gyroMode==="scope"&&(k==="tpp"||k==="fpp")?" (Always on only)":""}\n`;
+  }
+  return s;
+}
+
+// ---------- controls ----------
+const BTN = {joy:"",sprint:"SPRINT",fireL:"",fireR:"",scope:"",jump:"JUMP",crouch:"CROUCH",prone:"PRONE",reload:"RELOAD",peekL:"",peekR:"",nade:"",heal:"",wpn1:"",wpn2:"",eye:"",bag:"",fpp:"FPP"};
+const BTN_FULL = {joy:"Joystick",sprint:"Sprint lock",fireL:"Left fire",fireR:"Right fire",scope:"Scope / ADS",jump:"Jump / climb",crouch:"Crouch",prone:"Prone",reload:"Reload",peekL:"Peek left",peekR:"Peek right",nade:"Throwables",heal:"Heals",wpn1:"Weapon slot 1",wpn2:"Weapon slot 2",eye:"Free look",bag:"Backpack",fpp:"TPP / FPP switch"};
+const FINGER = {LT:"Left thumb",RT:"Right thumb",LI:"Left index",RI:"Right index",LM:"Left middle",RM:"Right middle"};
+// Game-style white line icons (24×24)
+const ICON = {
+  fire:`<path d="M12 2.5c2.2 2 3.2 4.3 3.2 7v7.8H8.8V9.5c0-2.7 1-5 3.2-7z" fill="currentColor"/><rect x="8.3" y="18.6" width="7.4" height="2.9" rx=".6" fill="currentColor"/>`,
+  scope:`<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><path d="M12 1.5v5M12 17.5v5M1.5 12h5M17.5 12h5"/>`,
+  jump:`<path d="M6 12.5l6-6 6 6M6 18.5l6-6 6 6"/>`,
+  crouch:`<circle cx="12" cy="4.5" r="2"/><path d="M12 7v5l-4 3 1 5M12 12l4 2-1 6M9 9.5h6"/>`,
+  prone:`<circle cx="4.5" cy="13" r="2"/><path d="M7 14h9l5 2M10 14l-2 4M14 14l1 4"/>`,
+  reload:`<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4.5H15"/>`,
+  peekL:`<path d="M10 6l-5 6 5 6"/><path d="M19 4v16" stroke-dasharray="2 2.4"/><path d="M5 12h9"/>`,
+  peekR:`<path d="M14 6l5 6-5 6"/><path d="M5 4v16" stroke-dasharray="2 2.4"/><path d="M19 12h-9"/>`,
+  nade:`<circle cx="12" cy="14.5" r="6"/><path d="M10 8.5V6.5h4v2M14 6.5l3.5-2.5"/><path d="M9 14.5h6" opacity=".6"/>`,
+  heal:`<rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M9 7V4.5h6V7M12 10v7M8.5 13.5h7"/>`,
+  eye:`<path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>`,
+  bag:`<path d="M7 8.5V7a5 5 0 0 1 10 0v1.5"/><rect x="5" y="8.5" width="14" height="12" rx="3"/><path d="M9 14h6"/>`,
+  sprint:`<circle cx="15" cy="4.2" r="1.9"/><path d="M8.5 9.5l4-2 3 2.5 3 1M12.5 7.5l-1.5 6 3.5 3-1 5M11 13.5l-3 2.5-4 .5"/>`,
+  fpp:`<path d="M2 12s3.6-6 10-6 10 6 10 6"/><circle cx="12" cy="12.5" r="2.4"/>`
+};
+const ICON_OF = {fireL:"fire",fireR:"fire",scope:"scope",jump:"jump",crouch:"crouch",prone:"prone",reload:"reload",peekL:"peekL",peekR:"peekR",nade:"nade",heal:"heal",eye:"eye",bag:"bag",sprint:"sprint",fpp:"fpp"};
+// Ready-made layouts, rebuilt from real BGMI customize-screen screenshots published online.
+// Each button: [id, x%, y%, size % of screen width, finger]. x/y are the centre, measured on the landscape screen.
+// team / map / sys / cancel place the fixed HUD pieces where that layout had them.
+const H = {heal:["heal",34,91,4,"RT"], wpn1:["wpn1",44,88,9.5,"RT"], wpn2:["wpn2",55.5,88,9.5,"RT"], bag:["bag",5,91,4,"LT"]};
+const LAYOUTS = {
+ 2:[{name:"BGMI default", src:"BGMI's default HUD",
+     tip:"The game's own starting layout. Thumbs do everything: left fire beside the joystick, scope and peeks on the right.",
+     team:{x:1,y:7.5,w:13}, cancel:{x:24,y:54},
+     btns:[["joy",20,74,13,"LT"],["sprint",20,30,5,"LT"],["fireL",7,47,7,"LT"],["fpp",27,86,3.4,"LT"],H.bag,H.heal,H.wpn1,H.wpn2,["nade",66,91,4,"RT"],
+       ["eye",79,38,4.2,"RT"],["peekL",79,55,6,"RT"],["scope",86,55,6.5,"RT"],["peekR",93,55,6,"RT"],["jump",93,72,5,"RT"],
+       ["fireR",82,76,8.5,"RT"],["reload",75,91,4.6,"RT"],["crouch",89,89,5,"RT"],["prone",96,89,4.4,"RT"]]}],
+ 3:[{name:"BGMI preset", src:"BGMI's built-in Three-Finger preset (2025 update)",
+     tip:"KRAFTON's own 3-finger preset. Left index fires from the top-left; right thumb scopes with a peek button on each side.",
+     team:{x:20.5,y:3,w:10}, cancel:{x:22,y:52},
+     btns:[["fireL",11,18,15,"LI"],["sprint",12,44,5,"LT"],["joy",12,74,14,"LT"],["fpp",25,62,4,"LT"],["bag",4,93,3.6,"LT"],
+       ["heal",46,73,4,"RT"],["nade",52,73,4,"RT"],H.wpn1,H.wpn2,
+       ["eye",77,30,4,"RT"],["peekL",75.5,53,9,"RT"],["scope",84,42,9.5,"RT"],["peekR",93,53,9,"RT"],["fireR",84,60,6,"RT"],
+       ["jump",93,72,5,"RT"],["reload",76,90,4.6,"RT"],["crouch",88,89,5.5,"RT"],["prone",95.5,89,4.8,"RT"]]},
+    {name:"Pro claw", src:"a 3-finger claw layout from a BGMI guide",
+     tip:"Fire top-left for the left index. The right thumb scopes between the two peek buttons and has crouch and prone along the bottom.",
+     team:{x:1,y:6,w:12}, cancel:{x:25,y:53},
+     btns:[["fireL",21,16,13,"LI"],["sprint",18,44,5,"LT"],["joy",18,83,12,"LT"],["bag",6,80,4,"LT"],["fpp",28,70,3.4,"LT"],
+       H.heal,H.wpn1,H.wpn2,["nade",68,94,4,"RT"],["reload",68,80,4.4,"RT"],
+       ["eye",80,40,4,"RT"],["peekL",77,54,7,"RT"],["scope",85,55,7,"RT"],["peekR",93,54,7,"RT"],["jump",92,73,6,"RT"],
+       ["crouch",78,91,6,"RT"],["prone",87,91,6,"RT"]]}],
+ 4:[{name:"Classic claw", src:"a 4-finger claw layout from esports.net",
+     tip:"Fire top-left with the team list beside it. Peeks under the team list for the left index, scope top-right for the right index, and a big right fire button in the bottom-right.",
+     team:{x:21,y:4,w:10.5}, cancel:{x:28,y:58},
+     btns:[["fireL",10.5,19,12.5,"LI"],["peekL",22,38,4.4,"LI"],["peekR",29,38,4.4,"LI"],["sprint",17,49,5.5,"LT"],["joy",17,73,13.5,"LT"],
+       ["jump",34,72,5.5,"LT"],["fpp",39,80,3.4,"LT"],H.bag,H.heal,H.wpn1,H.wpn2,["nade",66,91,4,"RT"],
+       ["scope",75,15,11,"RI"],["eye",79,34,4.4,"RT"],["crouch",92.5,69,6,"RT"],["fireR",81,84,9.5,"RT"],
+       ["reload",72.5,91,4.4,"RT"],["prone",89.5,91,4.6,"RT"]]},
+    {name:"Wide claw", src:"a 4-finger claw layout from gamingonphone.com",
+     tip:"Fire a little in from the corner, scope top-right, peeks stacked on the right edge, and a full action row along the bottom.",
+     team:{x:.5,y:10,w:10.5}, cancel:{x:25,y:53},
+     btns:[["fireL",19.5,16,14,"LI"],["sprint",16,51,5.5,"LT"],["joy",16,75,12,"LT"],["bag",4,92,4.4,"LT"],["fpp",26,66,3.4,"LT"],
+       ["heal",31,92,4,"RT"],["wpn1",43,88,9.5,"RT"],["wpn2",54.5,88,9.5,"RT"],["nade",67,93,4,"RT"],
+       ["scope",75,14,10.5,"RI"],["eye",88,31,4,"RT"],["peekL",87.5,45,6.5,"RT"],["peekR",95,58,6,"RT"],["jump",94.5,76,6,"RT"],
+       ["reload",75,92,4.6,"RT"],["crouch",82,92,5,"RT"],["prone",89,92,5,"RT"]]}],
+ 5:[{name:"Corner fire", src:"a 5-finger claw layout from Sportskeeda",
+     tip:"Left middle fires from the corner, left index crouches, right index scopes and jumps. Best on 6.7\" phones and bigger.",
+     team:{x:.5,y:40,w:10}, cancel:{x:36,y:55}, prompts:{x:45,y:40},
+     btns:[["fireL",10.5,19,15,"LM"],["crouch",34,36,8,"LI"],["sprint",24,57,5,"LT"],["joy",24,81,13,"LT"],["fpp",33,70,3.4,"LT"],H.bag,
+       H.heal,H.wpn1,H.wpn2,["nade",66,92,4,"RT"],
+       ["scope",71,14,11,"RI"],["jump",60,30,7,"RI"],["eye",62,70,4,"RT"],["peekL",69,55,7.5,"RT"],["peekR",77.5,55,7.5,"RT"],
+       ["reload",73,91,4.6,"RT"],["prone",82,91,6,"RT"]]},
+    {name:"Top-right scope", src:"a 5-finger claw layout from a BGMI creator's video",
+     tip:"Scope pushed into the top-right corner with the minimap moved inward. Left index handles crouch and prone; right index scopes and jumps.",
+     team:{x:3,y:50,w:8.5}, map:{x:64,y:12,w:11,h:22}, sys:61.5, sysTop:12, cancel:{x:38,y:61}, prompts:{x:45,y:40},
+     btns:[["fireL",10,17,13,"LM"],["prone",29,20,6,"LI"],["crouch",28.5,42,6,"LI"],["sprint",26,60,5,"LT"],["joy",26,84,12,"LT"],H.bag,
+       ["heal",36,92,4,"RT"],["wpn1",46,88,9.5,"RT"],["wpn2",57.5,88,9.5,"RT"],["nade",66,91,4,"RT"],
+       ["scope",93.5,16,11,"RI"],["jump",81,17,7,"RI"],["eye",80,37,4,"RT"],["peekL",70,52,7.5,"RT"],["peekR",80,52,7.5,"RT"],
+       ["fpp",89,50,4.5,"RT"],["reload",74,89,4.6,"RT"]]}],
+ 6:[{name:"Full claw", src:"a 6-finger claw layout from a BGMI creator's video",
+     tip:"Huge corner fire for the left middle, minimap moved beside it, scope and jump across the top-right for the right middle and index. Only practical on 6.9\" phones and tablets.",
+     team:{x:.5,y:42,w:10}, map:{x:24,y:7,w:12,h:24}, sys:96, cancel:{x:33,y:56},
+     btns:[["fireL",11,22,16,"LM"],["sprint",23,47,5.5,"LI"],["joy",23,77,13.5,"LT"],H.bag,["heal",35,92,4,"RT"],H.wpn1,H.wpn2,
+       ["scope",85.5,24,12,"RM"],["jump",73,24,8,"RI"],["peekL",77,56,8,"RT"],["peekR",88,56,8,"RT"],["fpp",95,42,4,"RT"],
+       ["prone",94,73,6,"RT"],["crouch",80,89,6,"RT"],["reload",72,90,4.6,"RT"],["nade",65,92,4,"RT"]]}]
+};
+const LAYOUT_NAME = {2:"2-finger",3:"3-finger",4:"4-finger claw",5:"5-finger claw",6:"6-finger claw"};
+function pickIdx(){const p=(S.layoutPick||{})[S.fingers]||0; return Math.min(p,LAYOUTS[S.fingers].length-1)}
+function curLayout(){return LAYOUTS[S.fingers][pickIdx()]}
+// Finger guide per grip, taken from the real layouts the web guides show (4-finger uses the classic claw)
+const GUIDE_REF = {2:[2,0],3:[3,0],4:[4,0],5:[5,0],6:[6,0]};
+let layout=[];
+function renderCtrl(){
+  const f=S.fingers, ref=GUIDE_REF[f], L=LAYOUTS[ref[0]][ref[1]];
+  $("layoutTitle").textContent=`${f}-finger layouts`;
+  renderWeb();
+  layout=L.btns.map(b=>({id:b[0],x:b[1],y:b[2],s:b[3],f:b[4]}));
+  const used=[...new Set(layout.map(b=>b.f))];
+  $("fingerList").innerHTML=used.map(x=>`<li><span style="--c:var(--f-${x})"><i></i>${FINGER[x]}</span><b>${(x==="RT"?["Camera swipe / aim"]:[]).concat(layout.filter(b=>b.f===x).map(b=>BTN_FULL[b.id])).join(", ")}</b></li>`).join("")
+    +(S.gyroMode!=="off"&&S.device.gyro?`<li><span>Wrists</span><b>Gyro tilt for ${S.gyroMode==="always"?"looking and recoil":"recoil while scoped"}</b></li>`:"");
+  const claw=f>=4, hasFireR=layout.some(b=>b.id==="fireR");
+  const set=[
+    ["Gyroscope", S.device.gyro?{off:"Off",scope:"Scope on",always:"Always on"}[S.gyroMode]:"Off (no gyro sensor)"],
+    ["Peek & Fire","On"],
+    ["Peek & Open Scope","On"],
+    ["Peek mode", claw?"Mixed":"Tap"],
+    ["Left fire button", f===2?"On":"Always on"],
+    ["Right fire button", hasFireR?"On":"Smallest size, lowest opacity"],
+    ["Scope mode", claw?"Hold":"Tap"],
+    ["Button opacity","45–55%"],
+    ["Auto-open doors","On"],
+    ["Graphics", S.device.fps>=120?"Smooth + 120 FPS":S.device.fps>=90?"Smooth + 90 FPS":"Smooth + Ultra (60)"],
+  ];
+  $("ctrlSettings").innerHTML=set.map(([k,v])=>`<li><span>${k}</span><b>${v}</b></li>`).join("");
+}
+// More layouts from around the web: links out to the original pages, which show the real screenshots.
+const WEB = {
+ 2:[{t:"Best two-finger control code & sensitivity",site:"KhelNow",url:"https://khelnow.com/gaming/bgmi-best-two-finger-control-code-sensitivity-settings-202506",d:"A 2-finger layout with an importable control code."},
+    {t:"Best BGMI sensitivity and layout for beginners",site:"Sportskeeda",url:"https://www.sportskeeda.com/bgmi/best-bgmi-sensitivity-gyroscope-settings-layout-beginners",d:"Default-style thumb layout with tips for new players."}],
+ 3:[{t:"Best 3-finger claw layout and sensitivity",site:"Sportskeeda",url:"https://sportskeeda.com/bgmi/bgmi-best-3-finger-claw-control-layout-sensitivity-settings",d:"Left index on fire, thumbs on move and aim."},
+    {t:"How to set up a custom three-finger claw",site:"GamingOnPhone",url:"https://gamingonphone.com/guides/bgmi-how-to-set-up-a-custom-three-finger-claw-layout",d:"Step-by-step 3-finger setup in the customize screen."},
+    {t:"Three-finger claw controls: codes and sensitivity",site:"AFK Gaming",url:"https://afkgaming.com/mobileesports/guide/bgmi-three-finger-claw-controls-codes-and-sensitivity",d:"3-finger layouts with control codes."},
+    {t:"Best 3-finger claw layout",site:"MEmu Play",url:"https://www.memuplay.com/blog/?p=28359",d:"Peeks either side of the scope, fire top-left."}],
+ 4:[{t:"What is the best 4-finger claw layout",site:"esports.net",url:"https://www.esports.net/news/mobile-games/bgmi-best-4-finger-claw-layout/",d:"Classic claw: fire top-left, scope top-right."},
+    {t:"Four-finger claw with a custom layout",site:"GamingOnPhone",url:"https://gamingonphone.com/guides/bgmi-four-finger-claw-with-a-custom-layout",d:"Wide claw with peeks on the right edge."},
+    {t:"Best 4-finger claw layout and setup",site:"AFK Gaming",url:"https://afkgaming.com/mobileesports/guide/best-4-finger-claw-layout-and-setup-for-battlegrounds-mobile-india-bgmi",d:"Finger-by-finger breakdown of a 4-finger claw."},
+    {t:"Best 4-finger claw control layout",site:"Sportskeeda",url:"https://www.sportskeeda.com/bgmi/bgmi-best-4-finger-claw-control-layout-sensitivity-settings-1",d:"Layout plus matching sensitivity."}],
+ 5:[{t:"Best 5-finger claw control layout",site:"Sportskeeda",url:"https://www.sportskeeda.com/bgmi/bgmi-best-5-finger-claw-control-layout-sensitivity-settings-december-2023",d:"Corner fire for the left middle finger."},
+    {t:"Best 5-finger claw for PUBG Mobile and BGMI",site:"GuruGamer",url:"https://gurugamer.com/mobile-games/best-5-finger-claw-pubg-mobile-17781",d:"Three fingers left, two right, with button sizes."}],
+ 6:[{t:"Claw layout codes: 4 to 6 finger setups",site:"BitTopup",url:"https://bittopup.com/article/PUBG-Mobile-Claw-Layout-Codes-46-Finger-Pro-Setups",d:"6-finger codes for 6.9\" phones and tablets."}]
+};
+function renderWeb(){
+  const f=S.fingers, list=WEB[f]||[];
+  const yt=`https://www.youtube.com/results?search_query=${encodeURIComponent("BGMI "+f+" finger claw layout")}`;
+  $("webLayouts").innerHTML=`<h4>Guides with real ${f}-finger layouts</h4><div class="webgrid">`+
+    list.map(w=>`<a class="weblink" href="${w.url}" target="_blank" rel="noopener"><span class="site">${w.site}</span><b>${w.t}</b><span>${w.d}</span><em>See the layout ↗</em></a>`).join("")+
+    `<a class="weblink yt" href="${yt}" target="_blank" rel="noopener"><span class="site">YouTube</span><b>Watch ${f}-finger layouts being set up</b><span>Creators walk through their layouts in the customize screen.</span><em>Watch on YouTube ↗</em></a></div>`;
+}
+function layoutText(){
+  const d=S.device;
+  let s=`Noxix Sens Lab layout — ${LAYOUT_NAME[S.fingers]} on ${d.name}\nPositions are % from the left edge / top edge of the screen in landscape.\n\n`;
+  const by={}; layout.forEach(b=>(by[b.f]=by[b.f]||[]).push(b));
+  for(const f in by){s+=FINGER[f].toUpperCase()+"\n"; by[f].forEach(b=>s+=`  ${BTN_FULL[b.id]}: x ${Math.round(b.x)}%, y ${Math.round(b.y)}%\n`); s+="\n"}
+  return s;
+}
+
+// ---------- fine tune ----------
+const SYMPTOMS = [
+  {t:"Crosshair overshoots in close fights",d:"You swing past enemies when turning to them.",fx:[["cam.close",0.93]],tag:"Camera close −7%"},
+  {t:"Too slow to turn on close enemies",d:"You lose track of someone running across you.",fx:[["cam.close",1.07]],tag:"Camera close +7%"},
+  {t:"Red dot / 2x spray climbs above head",d:"You can't pull down fast enough.",fx:[["ads.close",1.06],["adsGyro.close",1.06]],tag:"ADS close +6%"},
+  {t:"Red dot / 2x spray drops below chest",d:"You pull down too much or it feels jittery.",fx:[["ads.close",0.94],["adsGyro.close",0.94]],tag:"ADS close −6%"},
+  {t:"3x / 4x recoil hard to hold",d:"Mid-range sprays go wild after a few bullets.",fx:[["ads.mid",1.06],["adsGyro.mid",1.06]],tag:"ADS mid +6%"},
+  {t:"3x / 4x feels shaky",d:"The crosshair wobbles on every small move.",fx:[["ads.mid",0.94],["adsGyro.mid",0.94],["cam.mid",0.95]],tag:"ADS mid −6%"},
+  {t:"6x / 8x too fast for sniping",d:"Small adjustments jump past the target.",fx:[["cam.long",0.92],["ads.long",0.92],["gyro.long",0.92]],tag:"Long range −8%"},
+  {t:"6x / 8x too slow to follow",d:"You can't track a running enemy at range.",fx:[["cam.long",1.08],["ads.long",1.08],["gyro.long",1.08]],tag:"Long range +8%"},
+  {t:"Gyro feels twitchy",d:"Small hand movements throw off your aim.",fx:[["gyro.close",0.92],["gyro.mid",0.92],["adsGyro.close",0.92],["adsGyro.mid",0.92]],tag:"Gyro −8%",gyro:true},
+  {t:"Gyro needs too much wrist",d:"Your wrists hurt or you run out of tilt.",fx:[["gyro.close",1.08],["gyro.mid",1.08],["adsGyro.close",1.08],["adsGyro.mid",1.08]],tag:"Gyro +8%",gyro:true},
+];
+function renderTune(){
+  $("tuneDevice").textContent=S.device.name;
+  const gyroOK=S.device.gyro&&S.gyroMode!=="off";
+  $("symptoms").innerHTML="";
+  SYMPTOMS.filter(s=>!s.gyro||gyroOK).forEach(s=>{
+    const b=document.createElement("button"); b.type="button"; b.className="sym";
+    b.innerHTML=`<strong>${s.t}</strong><span>${s.d}</span><em>${s.tag}</em>`;
+    b.onclick=()=>{const t=getTune(); s.fx.forEach(([k,m])=>t.mult[k]=+((t.mult[k]||1)*m).toFixed(4)); t.log.unshift(s.tag); t.log=t.log.slice(0,12); LS.set(tuneKey(),t); renderAll(); flash("toastSens","Adjusted: "+s.tag)};
+    $("symptoms").appendChild(b);
+  });
+  const t=getTune();
+  const groups=Object.entries(t.mult).filter(([,v])=>Math.abs(v-1)>0.001);
+  $("history").innerHTML = groups.length
+    ? groups.map(([k,v])=>`<div>${k.replace("adsGyro","ADS gyro").replace("cam","Camera").replace("ads","ADS").replace("gyro","Gyro").replace("."," ")}: ${v>1?"+":""}${Math.round((v-1)*100)}%</div>`).join("")+`<div style="margin-top:6px">Last: ${t.log.slice(0,4).join(" · ")}</div>`
+    : "No adjustments yet. Tap a problem above after a Training Ground session.";
+  const g=S.gyroMode!=="off"&&S.device.gyro;
+  const days=[
+    ["Day 1","Training Ground, 15 min. Spray M416 at the 50 m targets with red dot, then 3x. Don't change anything yet."],
+    ["Day 2","TDM Warehouse, 3 matches. Focus on close-range tracking. Use Fine-tune if you keep overshooting."],
+    ["Day 3",g?"Gyro only: tilt-track moving targets with 2x and 4x for 10 min. Keep your elbows relaxed.":"Swipe drills: flick between targets at 25 m and 75 m, 5 min each."],
+    ["Day 4","Peek & fire practice in TDM. Left-index fire plus peek until it's automatic."],
+    ["Day 5","Classic match. Note which range you lose fights at, then adjust only that range."],
+    ["Day 6","Mid-range sprays with 3x and 4x on a Beryl or AKM. Check recoil, then Fine-tune mid range if needed."],
+    ["Day 7","Ranked matches. If nothing feels wrong, stop changing values and lock it in."]
+  ];
+  $("days").innerHTML=days.map(([d,t])=>`<li><b>${d}</b><span>${t}</span></li>`).join("");
+}
+$("resetTune").onclick=()=>{try{localStorage.removeItem("senslab:"+tuneKey())}catch(e){} renderAll()};
+
+// ---------- copy ----------
+function copy(text,toast){
+  const done=()=>flash(toast,"Copied");
+  const fallback=()=>{const ta=$("copyArea"); ta.value=text; ta.select(); try{document.execCommand("copy"); done()}catch(e){flash(toast,"Select and copy manually")}};
+  try{navigator.clipboard.writeText(text).then(done,fallback)}catch(e){fallback()}
+}
+let ft={};
+function flash(id,msg){const el=$(id); el.textContent=msg; clearTimeout(ft[id]); ft[id]=setTimeout(()=>el.textContent="",1800)}
+$("copySens").onclick=()=>copy(sensText(),"toastSens");
+
+// ---------- render ----------
+function renderAll(){
+  if(!S.device.gyro&&S.gyroMode!=="off") S.gyroMode="off";
+  seg("segFingers","fingers",OPTS.fingers); seg("segGyro","gyroMode",OPTS.gyroMode); seg("segAim","aim",OPTS.aim);
+  seg("segRole","role",OPTS.role); seg("segRecoil","recoil",OPTS.recoil);
+  $("segGyro").querySelectorAll("button").forEach((b,i)=>{if(!S.device.gyro&&i>0) b.disabled=true});
+  $("overall").value=S.overall; $("overallOut").textContent=S.overall+"%";
+  syncSpecs();
+  $("convDev").value=(S.conv&&S.conv.dev)||""; $("convTpp").value=(S.conv&&S.conv.tpp)||"";
+  const d=S.device;
+  $("resTitle").textContent=d.name;
+  $("readout").innerHTML=`<span class="chip">${d.size}" screen</span><span class="chip">${d.fps} FPS</span><span class="chip">${S.fingers}-finger</span><span class="chip">gyro ${OPTS.gyroMode.find(o=>o[0]===S.gyroMode)[1].toLowerCase()}</span>`;
+  renderTabs(); renderSens(); renderCtrl(); renderTune(); renderPro();
+}
+renderAll();
+
+// ---------- motion pass 2: embers, spotlight, 3D reveal ----------
+(function embers(){
+  const cv=$("embers"); if(!cv||still) return;
+  const ctx=cv.getContext&&cv.getContext("2d"); if(!ctx) return;
+  const hero=cv.parentElement, dpr=Math.min(2,window.devicePixelRatio||1);
+  let W=0,H=0,ps=[],vis=true,raf=0;
+  const mk=any=>({x:Math.random()*W,y:any?Math.random()*H:H+8,r:Math.random()*1.7+.4,vy:Math.random()*.55+.15,vx:(Math.random()-.5)*.25,a:Math.random()*.55+.3,t:Math.random()*6.28,
+    c:Math.random()<.15?"255,255,255":Math.random()<.55?"255,42,61":"255,128,64"});
+  function size(){const r=hero.getBoundingClientRect(); W=r.width; H=r.height; cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
+    const n=Math.max(20,Math.min(90,Math.round(W*H/11000))); ps=ps.filter(p=>p.x<=W); while(ps.length<n) ps.push(mk(true)); ps.length=n}
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    for(const p of ps){
+      p.t+=.02; p.y-=p.vy; p.x+=p.vx+Math.sin(p.t)*.15; if(p.y<-8) Object.assign(p,mk(false));
+      const a=p.a*(.6+.4*Math.sin(p.t*3)), fade=Math.min(1,p.y/(H*.35));
+      ctx.fillStyle=`rgba(${p.c},${(a*fade*.18).toFixed(3)})`; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*3.2,0,6.283); ctx.fill();
+      ctx.fillStyle=`rgba(${p.c},${(a*fade).toFixed(3)})`; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.283); ctx.fill();
+    }
+    raf=vis&&!document.hidden?requestAnimationFrame(tick):0;
+  }
+  const go=()=>{if(!raf&&vis&&!document.hidden) raf=requestAnimationFrame(tick)};
+  size(); go();
+  let rt; addEventListener("resize",()=>{clearTimeout(rt); rt=setTimeout(size,150)});
+  document.addEventListener("visibilitychange",go);
+  if("IntersectionObserver" in window) new IntersectionObserver(es=>{vis=es[0].isIntersecting; go()}).observe(hero);
+})();
+if(fine&&!still){
+  const rs=document.documentElement.style;
+  document.addEventListener("pointermove",e=>{rs.setProperty("--mx",e.clientX+"px"); rs.setProperty("--my",e.clientY+"px")},{passive:true});
+}
+const rvIO=(!still&&"IntersectionObserver" in window)?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("rv-in"); rvIO.unobserve(e.target)}}),{threshold:.1}):null;
+function reveal(root){
+  if(!rvIO||!root) return;
+  [...root.querySelectorAll(".card,.sym,.feel,.weblink,.hudwrap")].forEach((el,i)=>{el.classList.remove("rv-in"); el.classList.add("rv"); el.style.setProperty("--d",(i%6)*70+"ms"); rvIO.observe(el)});
+  setTimeout(()=>root.querySelectorAll(".rv:not(.rv-in)").forEach(el=>el.classList.add("rv-in")),3000); // never leave anything hidden
+}
+TABS.forEach(t=>$("tab-"+t).addEventListener("click",()=>reveal($("p-"+t))));
+reveal($("p-"+S.tab));
+})();
+</script>
+
+</body></html>
