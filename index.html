@@ -391,6 +391,8 @@ details.why>summary{color:var(--fg);font-size:15px}
 .warnline{color:var(--warn)}
 .prohead .toast{display:block;margin-top:6px}
 @media (prefers-reduced-motion:reduce){.phone3d,.p3d-shadow,.floor{animation:none}.tilt{transform:none}}
+.upd{color:var(--fg);font-size:13.5px;border:1px solid var(--line2);border-left:3px solid var(--good);border-radius:10px;padding:10px 14px;background:var(--surface)}
+.upd b{color:var(--good)}
 .foot{padding-block:20px 40px;font-size:12.5px;color:var(--dim);border-top:1px solid var(--line);margin-top:28px}
 #copyArea{position:absolute;left:-9999px;top:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
@@ -474,7 +476,7 @@ details.why>summary{color:var(--fg);font-size:15px}
   <canvas class="embers" id="embers" aria-hidden="true"></canvas>
   <div class="wrap hero-in">
     <div class="pitch">
-      <p class="eyebrow"><i></i>Free · BGMI &amp; PUBG Mobile</p>
+      <p class="eyebrow"><i></i>Free · BGMI &amp; PUBG Mobile · Updated for 4.7</p>
       <h1>Sensitivity built for <em data-text="your">your</em> phone</h1>
       <p class="lede">Pick your phone, your grip and gyro. Get every camera, ADS and gyro value, layout guides and pro players' codes, in seconds.</p>
       <ul class="proof">
@@ -578,10 +580,12 @@ details.why>summary{color:var(--fg);font-size:15px}
   </nav>
 
   <section class="panel" id="p-sens" role="tabpanel" aria-labelledby="tab-sens">
+    <p class="hint upd"><b>Updated for BGMI 4.7.</b> Enter these in BGMI under <b>Settings → Sensitivity</b>. Since the 4.7 update, Sensitivity is the 4th tab (after Controls, Key Settings and Display).</p>
     <div class="feel" id="feel"></div>
     <div class="cards" id="sensCards"></div>
     <details class="why more"><summary>How it's calculated</summary><div class="factors" id="factors"></div>
-      <p class="note">In BGMI a swipe turns the camera by how much of the screen width you cover. A wider screen needs a higher value for the same thumb movement, so Sens Lab uses your screen's real width to give the same comfortable swipe on any phone. Each scope is set to about 0.88 ÷ its zoom, so every scope feels consistent. Gyro works by tilt, so it barely depends on screen size.</p></details>
+      <p class="note">In BGMI a swipe turns the camera by how much of the screen width you cover. A wider screen needs a higher value for the same thumb movement, so Sens Lab uses your screen's real width to give the same comfortable swipe on any phone. Each scope is set to about 0.88 ÷ its zoom, so every scope feels consistent. Gyro works by tilt, so it barely depends on screen size.</p>
+      <p class="note">Checked against the official BGMI 4.7 patch notes (released 18 Nov 2026): the update doesn't change sensitivity settings, scope zoom or aim assist, so these values still apply. Its only recoil change is about 10% less horizontal recoil on the ASM Abakan.</p></details>
   </section>
 
   <section class="panel" id="p-ctrl" role="tabpanel" aria-labelledby="tab-ctrl" hidden>
@@ -589,7 +593,7 @@ details.why>summary{color:var(--fg);font-size:15px}
       <div class="bar">
         <h3 id="layoutTitle" style="font-size:22px;text-transform:uppercase"></h3>
       </div>
-      <p class="hint" style="color:var(--fg);font-size:14px">Open a guide to see the real layout, then copy it in BGMI: Settings → Controls → Customize, and tap Save.</p>
+      <p class="hint" style="color:var(--fg);font-size:14px">Open a guide to see the real layout, then copy it in BGMI: Settings → Controls (the first tab since update 4.7) → Customize, and tap Save.</p>
       <div class="web" id="webLayouts"></div>
     </div>
     <div class="two">
@@ -601,7 +605,7 @@ details.why>summary{color:var(--fg);font-size:15px}
   <section class="panel" id="p-pro" role="tabpanel" aria-labelledby="tab-pro" hidden>
     <div class="card prohead">
       <h3>Pro &amp; creator codes <small id="proChecked"></small></h3>
-      <p class="note">Codes that famous BGMI players and creators have shared, collected from published articles and checked regularly. Tap <b>Copy</b>, then in BGMI go to <b>Settings → Sensitivity → Layout Management → Search</b> (control codes: <b>Settings → Controls → Customize → Layout Management</b>), paste the code, preview and apply. Open <b>Sensitivity values</b> on a card to copy a player's numbers by hand, or watch their setup videos on YouTube.</p>
+      <p class="note">Codes that famous BGMI players and creators have shared, collected from published articles and checked regularly. Tap <b>Copy</b>, then in BGMI go to <b>Settings → Sensitivity</b> (4th tab since update 4.7) <b>→ Layout Management → Search</b> (control codes: <b>Settings → Controls → Customize → Layout Management</b>), paste the code, preview and apply. Open <b>Sensitivity values</b> on a card to copy a player's numbers by hand, or watch their setup videos on YouTube.</p>
       <p class="note warnline">Shared codes can expire after BGMI updates. If the game says a code is invalid, try that player's other code, or copy their values by hand.</p>
       <span class="toast" id="toastPro" aria-live="polite"></span>
     </div>
