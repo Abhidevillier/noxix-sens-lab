@@ -744,11 +744,13 @@ function factors(){
   const W=widthCm(size,ar);
   const ov=S.overall/100;
   const conv=convFrom();
-  // target: cm of swipe for a 180° turn
-  let cm = conv ? 180*conv.oW/(K*conv.raw) : SWIPE_CM[S.fingers]*AIM_CM[S.aim];
-  cm/=ov;
   const gyroOK=d.gyro&&S.gyroMode!=="off";
   const look=gyroOK&&S.gyroMode==="always"?0.85:1;  // tilt does part of the turning
+  // target: cm of swipe for a 180° turn.
+  // When converting, the value entered is the camera % the player already uses, which already
+  // includes the always-on-gyro reduction, so undo it here or it would be applied twice.
+  let cm = conv ? 180*conv.oW*look/(K*conv.raw) : SWIPE_CM[S.fingers]*AIM_CM[S.aim];
+  cm/=ov;
   const raw=180*W/(K*cm);
   const camTpp=raw*look;
   const freeTpp=raw;
@@ -764,7 +766,7 @@ function factors(){
   if(!gyroOK) f.push({k:"No gyro",v:1.08,note:"ADS red dot to 4x"});
   if(S.role!=="flex") f.push({k:S.role==="rusher"?"Rusher":"Sniper",v:S.role==="rusher"?1.08:0.85,note:S.role==="rusher"?"red dot, 2x":"6x, 8x"});
   if(recoil!==1) f.push({k:S.recoil==="low"?"Spray kicks up":"Spray pulls low",v:recoil,note:"ADS scopes"});
-  if(ov!==1&&!conv) f.push({k:"Overall speed",v:ov});
+  if(ov!==1) f.push({k:"Overall speed",v:ov,note:conv?"on top of your matched sens":""});
   return {W,cm,camTpp,freeTpp,gyroTpp,recoil,gyroOK,conv,list:f};
 }
 function compute(){
